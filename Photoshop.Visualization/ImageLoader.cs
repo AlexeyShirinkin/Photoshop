@@ -7,8 +7,11 @@ public static class ImageLoader
         var openDialog = new OpenFileDialog();
         openDialog.Filter = "Image Files(*.BMP;*.JPG;*.GIF;*.PNG)|*.BMP;*.JPG;*.GIF;*.PNG|All files (*.*)|*.*";
 
-        if (openDialog.ShowDialog() != DialogResult.OK) 
+        if (openDialog.ShowDialog() != DialogResult.OK)
+        {
+            MessageBox.Show("Unable to open provider", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return null;
+        }
 
         Image image;
         try
