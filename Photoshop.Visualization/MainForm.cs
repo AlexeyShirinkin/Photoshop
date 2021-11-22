@@ -2,27 +2,48 @@ namespace Photoshop.Visualization;
 
 public sealed partial class MainForm : Form
 {
+    private Image? image;
+    private readonly PictureBox pictureBox;
+    
     public MainForm()
     {
-        var panel = CreateLayoutPanel();
+        WindowState = FormWindowState.Maximized;
         
         var loadButton = CreateLoadButton();
-        panel.Controls.Add(loadButton);
+        Controls.Add(loadButton);
+        
+        var panel = CreateLayoutPanel();
+        Controls.Add(panel);
 
-        var pictureBox = CreatePictureBox();
+        pictureBox = CreatePictureBox();
         panel.Controls.Add(pictureBox);
         
-        Controls.Add(panel);
-        AutoSize = true;
+        panel.MouseWheel += PictureBoxOnMouseWheel;
         
         loadButton.Click += (_, _) =>
         {
-            var image = ImageLoader.Load();
-            if (image is null)
+            var loadedImage = ImageLoader.Load();
+            if (loadedImage == null)
                 return;
-            
-            pictureBox.Image = image;
+
+            image?.Dispose();
+            image = loadedImage;
+            pictureBox.Image = loadedImage;
         };
+    }
+
+    private void PictureBoxOnMouseWheel(object? sender, MouseEventArgs e)
+    {
+        if (ModifierKeys != Keys.Control)
+            return;
+        
+        const double factor = 1.05;
+        var size = pictureBox.Image.Size;
+        var newSize = e.Delta > 0
+            ? new Size((int)(size.Width * factor), (int)(size.Height * factor))
+            : new Size((int)(size.Width / factor), (int)(size.Height / factor));
+        pictureBox.Image = new Bitmap(image!, newSize);
+        pictureBox.Update();
     }
     
     private static Button CreateLoadButton() =>
@@ -35,13 +56,14 @@ public sealed partial class MainForm : Form
     private static PictureBox CreatePictureBox() =>
         new()
         {
-            AutoSize = true
+            AutoSize = true,
         };
     
-    private static FlowLayoutPanel CreateLayoutPanel() =>
+    private static Panel CreateLayoutPanel() =>
         new()
         {
-            AutoSize = true,
-            FlowDirection = FlowDirection.TopDown
+            Location = new Point(0, 50),
+            Size = new Size(900, 900),
+            AutoScroll = true,
         };
 }
