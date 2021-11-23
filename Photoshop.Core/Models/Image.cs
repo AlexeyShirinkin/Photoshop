@@ -4,7 +4,9 @@ public class Image
 {
     public int Width { get; }
     public int Height { get; }
-    private Pixel[,] pixels; //TODO: зависимость от пикселей нехорошо,можно переделать на какую-нибудь абстракццию
+
+    private readonly Pixel[,]
+        pixels; //TODO: зависимость от пикселей нехорошо,можно переделать на какую-нибудь абстракццию
 
     public Image(Pixel[,] pixels)
     {
@@ -12,4 +14,6 @@ public class Image
         Width = pixels.GetLength(0);
         Height = pixels.GetLength(1);
     }
+
+    public Pixel this[int i, int j] => pixels[i, j];
 }

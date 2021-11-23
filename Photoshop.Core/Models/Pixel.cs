@@ -1,15 +1,22 @@
-﻿namespace Photoshop.Core.Models;
+﻿using System.Drawing;
+
+namespace Photoshop.Core.Models;
 
 public class Pixel
 {
-    public double R { get; }
-    public double G { get; }
-    public double B { get; }
+    public int R { get; }
+    public int G { get; }
+    public int B { get; }
 
-    public Pixel(double r, double g, double b)
+    public Pixel(int r, int g, int b)
     {
         R = r;
         G = g;
         B = b;
+    }
+
+    public Color GetColorFromRgb()
+    {
+        return Color.FromArgb(R, G, B);
     }
 }

@@ -5,25 +5,34 @@ public static class ImageLoader
     public static Image? Load()
     {
         var openDialog = new OpenFileDialog();
-        openDialog.Filter = "Image Files(*.BMP;*.JPG;*.GIF;*.PNG)|*.BMP;*.JPG;*.GIF;*.PNG|All files (*.*)|*.*";
+        openDialog.Filter =
+            "Image Files(*.BMP;*.JPG;*.GIF;*.PNG)|*.BMP;*.JPG;*.GIF;*.PNG|All files (*.*)|*.*";
 
         if (openDialog.ShowDialog() != DialogResult.OK)
         {
-            MessageBox.Show("Unable to open provider", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("Unable to open provider", "Error", MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
             return null;
         }
 
-        Image image;
+        if (!TryGetImage(openDialog.FileName, out var image))
+            MessageBox.Show("Unable to open file", "Error", MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+
+        return image;
+    }
+
+    private static bool TryGetImage(string fileName, out Image? image)
+    {
         try
         {
-            image = new Bitmap(openDialog.FileName);
+            image = new Bitmap(fileName);
+            return true;
         }
         catch
         {
-            MessageBox.Show("Unable to open file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return null;
+            image = null;
+            return false;
         }
-
-        return image;
     }
 }
