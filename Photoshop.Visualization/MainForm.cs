@@ -1,8 +1,8 @@
-using Photoshop.Core.Converters;
+using System.Drawing.Drawing2D;
 
 namespace Photoshop.Visualization;
 
-public sealed partial class MainForm : Form
+public sealed partial class MainForm : Form //todo все на async переделать
 {
     private readonly FormState formState;
     private readonly PictureBox pictureBox;
@@ -12,13 +12,23 @@ public sealed partial class MainForm : Form
     {
         formState = new FormState();
         WindowState = FormWindowState.Maximized;
-        mainPanel = CreateLayoutPanel();
-        pictureBox = CreatePictureBox();
+        mainPanel = ViewElementsFactory.CreateLayoutPanel(PictureBoxOnMouseWheel);
+        pictureBox = ViewElementsFactory.CreatePictureBox();
 
-        Controls.Add(CreateLoadButton());
-        Controls.Add(CreateRotateButton());
         Controls.Add(mainPanel);
+        Controls.Add(ViewElementsFactory.CreateToolStripMenu(OnClick, OnRotateClick));
         mainPanel.Controls.Add(pictureBox);
+    }
+
+    private void OnClick(object? sender, EventArgs eventArgs)
+    {
+        var loadedImage = ImageLoader.Load();
+        if (loadedImage == null)
+            return;
+        formState.Image?.Dispose();
+        formState.SetImage(loadedImage);
+        pictureBox.Image = loadedImage;
+        pictureBox.Dock = DockStyle.Fill;
     }
 
     private void PictureBoxOnMouseWheel(object? sender, MouseEventArgs e)
@@ -36,59 +46,18 @@ public sealed partial class MainForm : Form
         pictureBox.Update();
     }
 
-    private Button CreateLoadButton()
+    private void OnRotateClick(object? sender, EventArgs args)
     {
-        var button = new Button();
-        button.Text = "Load image";
-        button.AutoSize = true;
-        button.Click += (_, _) =>
-                        {
-                            var loadedImage = ImageLoader.Load();
-                            if (loadedImage == null)
-                                return;
+        if (formState.Image is null || pictureBox is null)
+            return;
+        var bmp = new Bitmap(formState.Image.Width, formState.Image.Height);
 
-                            formState.Image?.Dispose();
-                            formState.SetImage(loadedImage);
-                            pictureBox.Image = loadedImage;
-                            pictureBox.Dock = DockStyle.Fill;
-                        };
-        return button;
-    }
-
-    private static PictureBox CreatePictureBox()
-    {
-        return new PictureBox
-               {
-                   AutoSize = true,
-               };
-    }
-
-    private Panel CreateLayoutPanel()
-    {
-        var panel = new Panel();
-        panel.Location = new Point(0, 50);
-        panel.AutoScroll = true;
-        panel.AutoSize = true;
-        panel.MouseWheel += PictureBoxOnMouseWheel;
-        return panel;
-    }
-
-    private Button CreateRotateButton()
-    {
-        var rotateButton = new Button();
-        rotateButton.Text = "Rotate";
-        rotateButton.Location = new Point(50, 0);
-        rotateButton.Click += (sender, args) =>
-                              {
-                                  if (formState.Image is null || pictureBox is null)
-                                      return;
-                                  var newImage =
-                                      new RotateConverter().Convert(formState.ConvertedImage);
-                                  var bitmap = BitmapConverter.ToBitmap(newImage);
-                                  pictureBox.Image = bitmap;
-                                  formState.SetImage(bitmap, newImage);
-                                  pictureBox.Update();
-                              };
-        return rotateButton;
+        var gfx = Graphics.FromImage(bmp);
+        gfx.TranslateTransform((float)bmp.Width / 2, (float)bmp.Height / 2);
+        gfx.RotateTransform(rotationAngle);
+        gfx.TranslateTransform(-(float)bmp.Width / 2, -(float)bmp.Height / 2);
+        gfx.InterpolationMode = InterpolationMode.HighQualityBicubic;
+        gfx.DrawImage(formState.Image, new Point(0, 0));
+        gfx.Dispose();
     }
 }
