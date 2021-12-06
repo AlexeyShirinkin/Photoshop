@@ -14,4 +14,10 @@ public class FormState
         Image = newImage;
         ConvertedImage = newConvertedImage ?? BitmapConverter.FromBitmap(new Bitmap(newImage));
     }
+
+    public void SetConvertedImage(Core.Models.Image image)
+    {
+        ConvertedImage = image;
+        Image = BitmapConverter.ToBitmap(image);
+    }
 }
