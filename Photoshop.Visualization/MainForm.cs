@@ -16,8 +16,11 @@ public sealed partial class MainForm : Form //todo все на async перед�
         pictureBox = ViewElementsFactory.CreatePictureBox();
 
         Controls.Add(mainPanel);
-        Controls.Add(ViewElementsFactory.CreateToolStripMenu(OnClick, OnRotateClick,
-                                                             OnToGrayClick));
+        Controls.Add(ViewElementsFactory.CreateToolStripMenu(OnClick,
+                                                             OnRotateClick,
+                                                             OnToGrayClick,
+                                                             OnMedianFilterClick,
+                                                             OnBlurClick));
         mainPanel.Controls.Add(pictureBox);
     }
 
@@ -52,6 +55,29 @@ public sealed partial class MainForm : Form //todo все на async перед�
         if (formState.Image == null || pictureBox == null)
             throw new Exception();
         var converter = new GrayscaleConverter();
+        var convertedImage = converter.Convert(formState.ConvertedImage);
+        formState.SetConvertedImage(convertedImage);
+        pictureBox.Image = formState.Image;
+        pictureBox.Update();
+    }
+
+    private void
+        OnBlurClick(object? sender, EventArgs args) //todo: выпилить повторяющийся код нахуй
+    {
+        if (formState.Image == null || pictureBox == null)
+            throw new Exception();
+        var converter = new BlurConverter();
+        var convertedImage = converter.Convert(formState.ConvertedImage);
+        formState.SetConvertedImage(convertedImage);
+        pictureBox.Image = formState.Image;
+        pictureBox.Update();
+    }
+
+    private void OnMedianFilterClick(object? sender, EventArgs args)
+    {
+        if (formState.Image == null || pictureBox == null)
+            throw new Exception();
+        var converter = new MedianConverter();
         var convertedImage = converter.Convert(formState.ConvertedImage);
         formState.SetConvertedImage(convertedImage);
         pictureBox.Image = formState.Image;

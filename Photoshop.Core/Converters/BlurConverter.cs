@@ -4,10 +4,10 @@ using Photoshop.Core.PixelConverters;
 
 namespace Photoshop.Core.Converters;
 
-public class GrayscaleConverter : ConverterBase<Pixel, Pixel>
+public class BlurConverter : ConverterBase<Pixel, Pixel[,]>
 {
-    public GrayscaleConverter() : base(new GrayScalePixelConverter(),
-                                       new PerPixelIterator())
+    public BlurConverter() :
+        base(new BlurPixelConverter(), new WindowIterator(5))
     {
     }
 

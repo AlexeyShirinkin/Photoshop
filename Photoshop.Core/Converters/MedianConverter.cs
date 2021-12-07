@@ -4,10 +4,11 @@ using Photoshop.Core.PixelConverters;
 
 namespace Photoshop.Core.Converters;
 
-public class GrayscaleConverter : ConverterBase<Pixel, Pixel>
+public class MedianConverter : ConverterBase<Pixel, IEnumerable<Pixel>>
 {
-    public GrayscaleConverter() : base(new GrayScalePixelConverter(),
-                                       new PerPixelIterator())
+    public MedianConverter()
+        : base(new MedianPixelConverter(),
+               new NeighbourhoodIterator())
     {
     }
 

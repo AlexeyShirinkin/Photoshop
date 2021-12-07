@@ -22,8 +22,11 @@ public static class ViewElementsFactory
         return panel;
     }
 
-    public static MenuStrip CreateToolStripMenu(EventHandler onClick, EventHandler onRotateClick,
-                                                EventHandler onToGrayClick)
+    public static MenuStrip CreateToolStripMenu(EventHandler onClick,
+                                                EventHandler onRotateClick,
+                                                EventHandler onToGrayClick,
+                                                EventHandler onMedianClick,
+                                                EventHandler onBlurCLick)
     {
         var menu = new MenuStrip();
         menu.Dock = DockStyle.Top;
@@ -35,7 +38,9 @@ public static class ViewElementsFactory
                          .With(CreateToolStripMenuItem("Load", onClick)))
                .With(CreateFileItem("Transform")
                      .With(CreateToolStripMenuItem("Rotate", onRotateClick))
-                     .With(CreateToolStripMenuItem("To gray", onToGrayClick)));
+                     .With(CreateToolStripMenuItem("To gray", onToGrayClick))
+                     .With(CreateToolStripMenuItem("Clear noise", onMedianClick))
+                     .With(CreateToolStripMenuItem("Blur", onBlurCLick)));
     }
 
     private static ToolStripMenuItem CreateFileItem(string text)
