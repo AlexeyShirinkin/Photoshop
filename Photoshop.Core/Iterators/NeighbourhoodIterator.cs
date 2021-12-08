@@ -4,7 +4,7 @@ namespace Photoshop.Core.Iterators;
 
 public class NeighbourhoodIterator : IPixelIterator<IEnumerable<Pixel>>
 {
-    private const int Coefficient = 10;
+    private const int Coefficient = 2;
     private readonly int coefficient;
 
     public NeighbourhoodIterator(int coefficient = Coefficient)

@@ -1,8 +1,6 @@
-﻿using Photoshop.Core.Models;
+﻿namespace Photoshop.Core.PixelConverters;
 
-namespace Photoshop.Core.PixelConverters;
-
-public class BlurPixelConverter : IPixelConverter<Pixel[,], Pixel>
+public class BlurPixelConverter : MatrixConverterBase
 {
     private static readonly double[,] Matrix = new double[5, 5]
                                                {
@@ -28,21 +26,12 @@ public class BlurPixelConverter : IPixelConverter<Pixel[,], Pixel>
                                                    }
                                                };
 
-    public Pixel ConvertPixel(Pixel[,] pixel)
+    public BlurPixelConverter() : base(new[,]
+                                       {
+                                           { -1, 0, 0 },
+                                           { 0, 1, 0 },
+                                           { 0, 0, 1 }
+                                       }, 1)
     {
-        var resultR = 0;
-        var resultB = 0;
-        var resultG = 0;
-        for (var i = 0; i < 5; i++)
-        {
-            for (var j = 0; j < 5; j++)
-            {
-                resultR += (int)(pixel[i, j].R * Matrix[i, j]);
-                resultB += (int)(pixel[i, j].B * Matrix[i, j]);
-                resultG += (int)(pixel[i, j].G * Matrix[i, j]);
-            }
-        }
-
-        return new Pixel((byte)resultR, (byte)resultG, (byte)resultB);
     }
 }

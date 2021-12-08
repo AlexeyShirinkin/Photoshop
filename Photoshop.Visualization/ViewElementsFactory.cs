@@ -1,4 +1,5 @@
-﻿using Photoshop.Visualization.Utilities;
+﻿using Photoshop.Core.Converters;
+using Photoshop.Visualization.Utilities;
 
 namespace Photoshop.Visualization;
 
@@ -22,25 +23,33 @@ public static class ViewElementsFactory
         return panel;
     }
 
-    public static MenuStrip CreateToolStripMenu(EventHandler onClick,
-                                                EventHandler onRotateClick,
-                                                EventHandler onToGrayClick,
-                                                EventHandler onMedianClick,
-                                                EventHandler onBlurCLick)
+    public static MenuStrip CreateToolStripMenu(EventHandler onLoad,
+                                                IReadOnlyCollection<ConvertMenuItem>
+                                                    convertMenuItems, Action<IConverter> onClick)
     {
         var menu = new MenuStrip();
         menu.Dock = DockStyle.Top;
         menu.Stretch = true;
         menu.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
         menu.BackColor = Color.WhiteSmoke;
+
         return menu
                .With(CreateFileItem("File")
-                         .With(CreateToolStripMenuItem("Load", onClick)))
-               .With(CreateFileItem("Transform")
-                     .With(CreateToolStripMenuItem("Rotate", onRotateClick))
-                     .With(CreateToolStripMenuItem("To gray", onToGrayClick))
-                     .With(CreateToolStripMenuItem("Clear noise", onMedianClick))
-                     .With(CreateToolStripMenuItem("Blur", onBlurCLick)));
+                         .With(CreateToolStripMenuItem("Load", onLoad)))
+               .With(GetTransformMenu(convertMenuItems, onClick));
+    }
+
+    private static ToolStripMenuItem GetTransformMenu(IEnumerable<ConvertMenuItem> convertMenuItems,
+                                                      Action<IConverter> onClick)
+    {
+        var menuItem = CreateFileItem("Transform");
+        return convertMenuItems.Aggregate(menuItem,
+                                          (current, convertMenuItem) =>
+                                              current
+                                                  .With(CreateToolStripMenuItem(convertMenuItem.MenuName,
+                                                         (_, _) =>
+                                                             onClick(convertMenuItem
+                                                                 .Converter))));
     }
 
     private static ToolStripMenuItem CreateFileItem(string text)
@@ -53,15 +62,5 @@ public static class ViewElementsFactory
         var toolStripMenuItem = new ToolStripMenuItem(text);
         toolStripMenuItem.Click += onClick;
         return toolStripMenuItem;
-    }
-
-
-    public static Button CreateRotateButton(EventHandler onClick)
-    {
-        var rotateButton = new Button();
-        rotateButton.Text = "Rotate";
-        rotateButton.Location = new Point(50, 0);
-        rotateButton.Click += onClick;
-        return rotateButton;
     }
 }

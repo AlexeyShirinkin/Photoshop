@@ -4,11 +4,19 @@ namespace Photoshop.Core.Iterators;
 
 public class WindowIterator : IPixelIterator<Pixel[,]>
 {
-    private readonly int windowSize;
+    private readonly int width;
+    private readonly int height;
 
-    public WindowIterator(int windowSize)
+    public WindowIterator(int width, int height)
     {
-        this.windowSize = windowSize / 2;
+        this.width = width;
+        this.height = height;
+    }
+
+    public WindowIterator(int size)
+    {
+        height = size;
+        width = size;
     }
 
     public IEnumerable<PixelWrapper<Pixel[,]>> IterateImagePixel(Image image)
@@ -25,17 +33,17 @@ public class WindowIterator : IPixelIterator<Pixel[,]>
 
     private Pixel[,] GetNeighborhood(int i, int j, Image image)
     {
-        var neighborhood = new Pixel[windowSize * 2 + 1, windowSize * 2 + 1];
+        var neighborhood = new Pixel[width, height];
         var rowCount = 0;
-        for (var k = i - windowSize; k < i + windowSize + 1; k++)
+        for (var k = i - width / 2; k < i + width / 2 + 1; k++)
         {
             var columnCount = 0;
-            for (var n = j - windowSize; n < j + windowSize + 1; n++)
+            for (var n = j - height / 2; n < j + height / 2 + 1; n++)
             {
                 if (IsImageContainsPixel(k, n, image.Width, image.Height))
                     neighborhood[rowCount, columnCount] = image[k, n];
                 else
-                    neighborhood[rowCount, columnCount] = new Pixel(0, 0, 0);
+                    neighborhood[rowCount, columnCount] = Pixel.Empty;
                 columnCount++;
             }
 
