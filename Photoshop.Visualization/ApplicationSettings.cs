@@ -10,6 +10,7 @@ public static class ApplicationSettings //todo: rename
             new ConvertMenuItem(new BlurConverter(), "Blur Filter"),
             new ConvertMenuItem(new MedianConverter(), "Clear Noise Filter"),
             new ConvertMenuItem(new SharpnessConverter(), "Sharpness Filter"),
-            new ConvertMenuItem(new EmbossingConverter(), "Embossing Filter")
+            new ConvertMenuItem(new EmbossingConverter(), "Embossing Filter"),
+            new ConvertMenuItem(new GaussConverter(), "Gauss Filter")
         };
 }
