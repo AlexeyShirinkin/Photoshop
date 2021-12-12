@@ -4,23 +4,24 @@ using Photoshop.Core.PixelConverters;
 
 namespace Photoshop.Core.Converters;
 
-public abstract class ConverterBase<TPixel, TReturn> : IConverter
+public abstract class ConverterBase<TResult, TInput, TPixel> : IConverter<TPixel>
+    where TPixel : IPixel
 {
-    private readonly IPixelConverter<TReturn, TPixel> pixelConverter;
-    private readonly IPixelIterator<TReturn> pixelIterator;
+    private readonly IPixelConverter<TInput, TResult> pixelConverter;
+    private readonly IPixelIterator<TInput, TPixel> pixelIterator;
 
-    protected ConverterBase(IPixelConverter<TReturn, TPixel> pixelConverter,
-                            IPixelIterator<TReturn> pixelIterator)
+    protected ConverterBase(IPixelConverter<TInput, TResult> pixelConverter,
+                            IPixelIterator<TInput, TPixel> pixelIterator)
     {
         this.pixelConverter = pixelConverter;
         this.pixelIterator = pixelIterator;
     }
 
-    public Image Convert(Image? image)
+    public Image<TPixel> Convert(Image<TPixel>? image)
     {
         if (image == null)
             throw new ArgumentNullException(nameof(image));
-        var newPixels = new TPixel[image.Width, image.Height];
+        var newPixels = new TResult[image.Width, image.Height];
         foreach (var pixelWrapper in pixelIterator.IterateImagePixel(image))
         {
             var newPixel = pixelConverter.ConvertPixel(pixelWrapper.Item);
@@ -30,5 +31,5 @@ public abstract class ConverterBase<TPixel, TReturn> : IConverter
         return ToImage(newPixels);
     }
 
-    protected abstract Image ToImage(TPixel[,] pixels);
+    protected abstract Image<TPixel> ToImage(TResult[,] pixels);
 }

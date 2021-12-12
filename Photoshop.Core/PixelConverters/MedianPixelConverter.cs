@@ -2,9 +2,9 @@
 
 namespace Photoshop.Core.PixelConverters;
 
-public class MedianPixelConverter : IPixelConverter<IEnumerable<Pixel>, Pixel>
+public class MedianPixelConverter : IPixelConverter<IEnumerable<RgbPixel>, RgbPixel>
 {
-    public Pixel ConvertPixel(IEnumerable<Pixel> pixel)
+    public RgbPixel ConvertPixel(IEnumerable<RgbPixel> pixel)
     {
         var pixels = pixel.ToList();
         pixels.Sort((pixel1, pixel2) => pixel1.Brightness.CompareTo(pixel2.Brightness));

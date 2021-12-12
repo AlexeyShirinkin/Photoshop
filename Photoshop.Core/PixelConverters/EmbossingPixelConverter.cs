@@ -1,6 +1,6 @@
 ﻿namespace Photoshop.Core.PixelConverters;
 
-public class EmbossingPixelConverter : MatrixConverterBase
+public class EmbossingPixelConverter : PixelMatrixConverterBase
 {
     public EmbossingPixelConverter()
         : base(new[,]

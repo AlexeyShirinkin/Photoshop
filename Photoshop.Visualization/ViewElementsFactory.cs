@@ -1,4 +1,5 @@
 ﻿using Photoshop.Core.Converters;
+using Photoshop.Core.Models;
 using Photoshop.Visualization.Utilities;
 
 namespace Photoshop.Visualization;
@@ -23,9 +24,11 @@ public static class ViewElementsFactory
         return panel;
     }
 
-    public static MenuStrip CreateToolStripMenu(EventHandler onLoad,
-                                                IReadOnlyCollection<ConvertMenuItem>
-                                                    convertMenuItems, Action<IConverter> onClick)
+    public static MenuStrip CreateToolStripMenu<TPixel>(EventHandler onLoad,
+                                                        IReadOnlyCollection<ConvertMenuItem<TPixel>>
+                                                            convertMenuItems,
+                                                        Action<IConverter<TPixel>> onClick)
+        where TPixel : IPixel
     {
         var menu = new MenuStrip();
         menu.Dock = DockStyle.Top;
@@ -39,17 +42,18 @@ public static class ViewElementsFactory
                .With(GetTransformMenu(convertMenuItems, onClick));
     }
 
-    private static ToolStripMenuItem GetTransformMenu(IEnumerable<ConvertMenuItem> convertMenuItems,
-                                                      Action<IConverter> onClick)
+    private static ToolStripMenuItem GetTransformMenu<TPixel>(
+        IEnumerable<ConvertMenuItem<TPixel>> convertMenuItems,
+        Action<IConverter<TPixel>> onClick)
+        where TPixel : IPixel
     {
         var menuItem = CreateFileItem("Transform");
         return convertMenuItems.Aggregate(menuItem,
                                           (current, convertMenuItem) =>
                                               current
-                                                  .With(CreateToolStripMenuItem(convertMenuItem.MenuName,
-                                                         (_, _) =>
-                                                             onClick(convertMenuItem
-                                                                 .Converter))));
+                                                  .With(CreateToolStripMenuItem<
+                                                            TPixel>(convertMenuItem.MenuName,
+                                                         onClick, convertMenuItem.Converter)));
     }
 
     private static ToolStripMenuItem CreateFileItem(string text)
@@ -57,10 +61,20 @@ public static class ViewElementsFactory
         return new ToolStripMenuItem(text);
     }
 
-    private static ToolStripMenuItem CreateToolStripMenuItem(string text, EventHandler onClick)
+    private static ToolStripMenuItem CreateToolStripMenuItem<TPixel>(
+        string text, Action<IConverter<TPixel>> onClick,
+        IConverter<TPixel> converter)
+        where TPixel : IPixel
     {
         var toolStripMenuItem = new ToolStripMenuItem(text);
-        toolStripMenuItem.Click += onClick;
+        toolStripMenuItem.Click += (_, _) => onClick(converter);
+        return toolStripMenuItem;
+    }
+
+    private static ToolStripMenuItem CreateToolStripMenuItem(string text, EventHandler onCLick)
+    {
+        var toolStripMenuItem = new ToolStripMenuItem(text);
+        toolStripMenuItem.Click += onCLick;
         return toolStripMenuItem;
     }
 }

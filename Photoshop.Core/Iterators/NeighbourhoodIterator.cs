@@ -2,7 +2,8 @@
 
 namespace Photoshop.Core.Iterators;
 
-public class NeighbourhoodIterator : IPixelIterator<IEnumerable<Pixel>>
+public class NeighbourhoodIterator<TPixel> : IPixelIterator<IEnumerable<TPixel>, TPixel>
+    where TPixel : IPixel
 {
     private const int Coefficient = 2;
     private readonly int coefficient;
@@ -12,21 +13,21 @@ public class NeighbourhoodIterator : IPixelIterator<IEnumerable<Pixel>>
         this.coefficient = coefficient;
     }
 
-    public IEnumerable<PixelWrapper<IEnumerable<Pixel>>> IterateImagePixel(Image image)
+    public IEnumerable<PixelWrapper<IEnumerable<TPixel>>> IterateImagePixel(Image<TPixel> image)
     {
         for (var i = 0; i < image.Width; i++)
         {
             for (var j = 0; j < image.Height; j++)
             {
                 yield return
-                    new PixelWrapper<IEnumerable<Pixel>>(i, j, GetNeighborhood(i, j, image));
+                    new PixelWrapper<IEnumerable<TPixel>>(i, j, GetNeighborhood(i, j, image));
             }
         }
     }
 
-    private IEnumerable<Pixel> GetNeighborhood(int i, int j, Image image)
+    private IEnumerable<TPixel> GetNeighborhood(int i, int j, Image<TPixel> image)
     {
-        var neighborhood = new List<Pixel>(coefficient * coefficient);
+        var neighborhood = new List<TPixel>(coefficient * coefficient);
         for (var k = i - coefficient; k < i + coefficient + 1; k++)
         {
             for (var n = j - coefficient; n < j + coefficient + 1; n++)

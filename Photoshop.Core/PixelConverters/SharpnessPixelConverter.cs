@@ -1,6 +1,6 @@
 ﻿namespace Photoshop.Core.PixelConverters;
 
-public class SharpnessPixelConverter : MatrixConverterBase
+public class SharpnessPixelConverter : PixelMatrixConverterBase
 {
     public SharpnessPixelConverter()
         : base(new[,]
