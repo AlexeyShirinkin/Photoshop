@@ -25,7 +25,9 @@ public static class ViewElementsFactory
     public static MenuStrip CreateToolStripMenu<TPixel>(EventHandler onLoad,
                                                         IReadOnlyCollection<ConvertMenuItem<TPixel>>
                                                             convertMenuItems,
-                                                        Action<IConverter<TPixel>> onClick)
+                                                        Action<IConverter<TPixel>> onClick,
+                                                        EventHandler onUndo,
+                                                        EventHandler onRedo)
         where TPixel : IPixel
     {
         var menu = new MenuStrip();
@@ -37,7 +39,9 @@ public static class ViewElementsFactory
         return menu
                .With(CreateFileItem("File")
                          .With(CreateToolStripMenuItem("Load", onLoad)))
-               .With(GetTransformMenu(convertMenuItems, onClick));
+               .With(GetTransformMenu(convertMenuItems, onClick))
+               .With(CreateToolStripMenuItem("Undo", onUndo))
+               .With(CreateToolStripMenuItem("Redo", onRedo));
     }
 
     private static ToolStripMenuItem GetTransformMenu<TPixel>(

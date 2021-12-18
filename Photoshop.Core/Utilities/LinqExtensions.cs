@@ -8,12 +8,7 @@ public static class LinqExtensions
     {
         if (items == null)
             throw new ArgumentNullException(nameof(items));
-        var startValue = start;
-        foreach (var item in items)
-        {
-            startValue = aggregator(startValue, item);
-        }
 
-        return startValue;
+        return items.Aggregate(start, aggregator);
     }
 }

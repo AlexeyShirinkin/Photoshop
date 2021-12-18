@@ -18,11 +18,12 @@ public sealed partial class MainForm : Form //todo все на async перед�
         pictureBox = ViewElementsFactory.CreatePictureBox();
 
         Controls.Add(mainPanel);
-        Controls.Add(ViewElementsFactory.CreateToolStripMenu(OnLoadClick,
-                                                             ApplicationSettings
-                                                                 .GetConverters(new
-                                                                     RgbConverterConvertersFactory()),
-                                                             OnConverterClick));
+        Controls.Add(ViewElementsFactory.CreateToolStripMenu(
+            OnLoadClick,
+            ApplicationSettings.GetConverters(new RgbConverterConvertersFactory()),
+            OnConverterClick,
+            OnUndoClick,
+            OnRedoClick));
         mainPanel.Controls.Add(pictureBox);
     }
 
@@ -31,18 +32,28 @@ public sealed partial class MainForm : Form //todo все на async перед�
         pictureBox.Image = formState.LoadImage();
     }
 
+    private void OnUndoClick(object? sender, EventArgs eventArgs)
+    {
+        pictureBox.Image = formState.Undo();
+    }
+
+    private void OnRedoClick(object? sender, EventArgs eventArgs)
+    {
+        pictureBox.Image = formState.Redo();
+    }
+
     private void PictureBoxOnMouseWheel(object? sender, MouseEventArgs e)
     {
         if (ModifierKeys != Keys.Control || !formState.IsImageSet)
             return;
-        
-        pictureBox.Image = formState.ScaleImage(e.Delta); 
+
+        pictureBox.Image = formState.ScaleImage(e.Delta);
         pictureBox.Update();
     }
 
     private void OnConverterClick(IConverter<RgbPixel> converter)
     {
-        pictureBox.Image = formState.ConvertImage(converter); 
+        pictureBox.Image = formState.ConvertImage(converter);
         pictureBox.Update();
     }
 }
