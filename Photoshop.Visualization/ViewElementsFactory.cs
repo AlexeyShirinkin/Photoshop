@@ -5,20 +5,18 @@ namespace Photoshop.Visualization;
 
 public static class ViewElementsFactory
 {
-    public static PictureBox CreatePictureBox()
-    {
-        return new PictureBox
-               {
-                   AutoSize = true,
-               };
-    }
+    public static PictureBox CreatePictureBox() =>
+        new()
+        {
+            AutoSize = true,
+        };
 
     public static Panel CreateLayoutPanel(MouseEventHandler mouseEventHandler)
     {
         var panel = new Panel();
         panel.Location = new Point(0, 50);
         panel.AutoScroll = true;
-        panel.AutoSize = true;
+        panel.Size = new Size(900, 900);
         panel.MouseWheel += mouseEventHandler;
         return panel;
     }

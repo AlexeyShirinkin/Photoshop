@@ -30,7 +30,6 @@ public sealed partial class MainForm : Form //todo все на async перед�
         formState.Image?.Dispose();
         formState.SetImage(loadedImage);
         pictureBox.Image = loadedImage;
-        pictureBox.Dock = DockStyle.Fill;
     }
 
     private void PictureBoxOnMouseWheel(object? sender, MouseEventArgs e)
@@ -44,7 +43,6 @@ public sealed partial class MainForm : Form //todo все на async перед�
             ? new Size((int)(size.Width * factor), (int)(size.Height * factor))
             : new Size((int)(size.Width / factor), (int)(size.Height / factor));
         pictureBox.Image = new Bitmap(formState.Image, newSize);
-        pictureBox.Dock = DockStyle.Fill;
         pictureBox.Update();
     }
 
