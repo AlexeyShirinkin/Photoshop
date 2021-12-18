@@ -2,7 +2,8 @@
 
 namespace Photoshop.Core.Iterators;
 
-public interface IPixelIterator<T>
+public interface IPixelIterator<TIterate, TPixel>
+    where TPixel : IPixel
 {
-    IEnumerable<PixelWrapper<T>> IterateImagePixel(Image image);
+    IEnumerable<PixelWrapper<TIterate>> IterateImagePixel(Image<TPixel> image);
 }

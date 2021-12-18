@@ -2,7 +2,8 @@
 
 namespace Photoshop.Core.Iterators;
 
-public class WindowIterator : IPixelIterator<Pixel[,]>
+public class WindowIterator<TPixel> : IPixelIterator<TPixel[,], TPixel>
+    where TPixel : IPixel
 {
     private readonly int width;
     private readonly int height;
@@ -19,21 +20,21 @@ public class WindowIterator : IPixelIterator<Pixel[,]>
         width = size;
     }
 
-    public IEnumerable<PixelWrapper<Pixel[,]>> IterateImagePixel(Image image)
+    public IEnumerable<PixelWrapper<TPixel[,]>> IterateImagePixel(Image<TPixel> image)
     {
         for (var i = 0; i < image.Width; i++)
         {
             for (var j = 0; j < image.Height; j++)
             {
                 yield return
-                    new PixelWrapper<Pixel[,]>(i, j, GetNeighborhood(i, j, image));
+                    new PixelWrapper<TPixel[,]>(i, j, GetNeighborhood(i, j, image));
             }
         }
     }
 
-    private Pixel[,] GetNeighborhood(int i, int j, Image image)
+    private TPixel[,] GetNeighborhood(int i, int j, Image<TPixel> image)
     {
-        var neighborhood = new Pixel[width, height];
+        var neighborhood = new TPixel[width, height];
         var rowCount = 0;
         for (var k = i - width / 2; k < i + width / 2 + 1; k++)
         {
@@ -41,9 +42,10 @@ public class WindowIterator : IPixelIterator<Pixel[,]>
             for (var n = j - height / 2; n < j + height / 2 + 1; n++)
             {
                 if (IsImageContainsPixel(k, n, image.Width, image.Height))
-                    neighborhood[rowCount, columnCount] = image[k, n];
+                    neighborhood[rowCount, columnCount] =
+                        (TPixel)image[k, n]; //todo not a good idea
                 else
-                    neighborhood[rowCount, columnCount] = Pixel.Empty;
+                    neighborhood[rowCount, columnCount] = default(TPixel);
                 columnCount++;
             }
 

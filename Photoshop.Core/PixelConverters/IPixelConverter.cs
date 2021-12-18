@@ -1,6 +1,6 @@
 ﻿namespace Photoshop.Core.PixelConverters;
 
-public interface IPixelConverter<TPixel, TReturn>
+public interface IPixelConverter<in TInput, out TResult>
 {
-    TReturn ConvertPixel(TPixel pixel);
+    TResult ConvertPixel(TInput pixel);
 }

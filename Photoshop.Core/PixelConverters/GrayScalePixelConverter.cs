@@ -2,11 +2,11 @@ using Photoshop.Core.Models;
 
 namespace Photoshop.Core.PixelConverters;
 
-public class GrayScalePixelConverter : IPixelConverter<Pixel, Pixel>
+public class GrayScalePixelConverter : IPixelConverter<RgbPixel, RgbPixel>
 {
-    public Pixel ConvertPixel(Pixel pixel)
+    public RgbPixel ConvertPixel(RgbPixel rgbPixel)
     {
-        var average = (byte)((pixel.B + pixel.G + pixel.R) / 3);
-        return new Pixel(average, average, average);
+        var average = (byte)((rgbPixel.B + rgbPixel.G + rgbPixel.R) / 3);
+        return new RgbPixel(average, average, average);
     }
 }

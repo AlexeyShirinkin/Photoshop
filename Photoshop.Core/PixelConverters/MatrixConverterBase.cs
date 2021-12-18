@@ -3,38 +3,33 @@ using Photoshop.Core.Utilities;
 
 namespace Photoshop.Core.PixelConverters;
 
-public abstract class MatrixConverterBase : IPixelConverter<Pixel[,], Pixel>
+public abstract class MatrixConverterBase<T, TPixel> : IPixelConverter<TPixel[,], TPixel>
+    where TPixel : IPixel
 {
-    private readonly int[,] matrix;
-    private readonly int coefficient;
-    private readonly int width;
-    private readonly int height;
+    protected readonly int[,] Matrix;
+    protected readonly int Coefficient;
+    protected readonly int Width;
+    protected readonly int Height;
 
     protected MatrixConverterBase(int[,] matrix, int coefficient)
     {
-        this.matrix = matrix;
-        this.coefficient = coefficient;
-        width = matrix.GetLength(0);
-        height = matrix.GetLength(1);
+        Matrix = matrix;
+        Coefficient = coefficient;
+        Width = matrix.GetLength(0);
+        Height = matrix.GetLength(1);
     }
 
-    public Pixel ConvertPixel(Pixel[,] pixel)
+    public TPixel ConvertPixel(TPixel[,] pixel)
     {
-        var resultR = 0;
-        var resultG = 0;
-        var resultB = 0;
-        for (var i = 0; i < width; i++)
-        {
-            for (var j = 0; j < height; j++)
-            {
-                resultR += pixel[i, j].R * matrix[i, j];
-                resultG += pixel[i, j].G * matrix[i, j];
-                resultB += pixel[i, j].B * matrix[i, j];
-            }
-        }
-
-        return new Pixel((resultR / coefficient).ToByte(),
-                         (resultG / coefficient).ToByte(),
-                         (resultB / coefficient).ToByte());
+        if (pixel.GetLength(0) != Width || pixel.GetLength(1) != Height)
+            throw new Exception("Не свопадают размерности матрицы свертки ");
+        var aggregated = pixel.Enumerate(Convert)
+                              .Aggregate(Aggregate, Default);
+        return ConvertToPixel(aggregated);
     }
+
+    protected abstract T Convert(TPixel pixel, int i, int j);
+    protected abstract T Aggregate(T previous, T current);
+    protected abstract T Default { get; }
+    protected abstract TPixel ConvertToPixel(T result);
 }

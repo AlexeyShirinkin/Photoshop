@@ -1,6 +1,6 @@
 ﻿namespace Photoshop.Core.PixelConverters;
 
-public class GaussPixelConverter : MatrixConverterBase
+public class GaussPixelConverter : PixelMatrixConverterBase
 {
     public GaussPixelConverter()
         : base(new int[,]
