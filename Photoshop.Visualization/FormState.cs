@@ -7,28 +7,46 @@ namespace Photoshop.Visualization;
 public class FormState<TPixel>
     where TPixel : IPixel
 {
-    public Image? Image { get; private set; }
-    public Image<TPixel>? ConvertedImage { get; private set; }
+    public bool IsImageSet => Image != null;
+    private Image? Image { get; set; }
+    private Size Size { get; set; }
+    private Image<TPixel>? ConvertedImage { get; set; }
     private readonly IPixelFactory<TPixel> pixelFactory;
+    private readonly double scalingFactor = 1.05;
 
     public FormState(IPixelFactory<TPixel> pixelFactory)
     {
         this.pixelFactory = pixelFactory;
     }
 
-
-    public void SetImage(Image? newImage, Image<TPixel>? newConvertedImage = null)
+    public Image LoadImage()
     {
+        var newImage = ImageLoader.Load();
+        Image?.Dispose();
         if (newImage is null)
-            return;
+            throw new FileLoadException("Не получилось загрузить файл");
+        Size = newImage.Size;
         Image = newImage;
-        ConvertedImage = newConvertedImage ??
-                         BitmapConverter.FromBitmap<TPixel>(new Bitmap(newImage), pixelFactory);
+        ConvertedImage = BitmapConverter.FromBitmap(new Bitmap(newImage), pixelFactory);
+        return newImage;
     }
 
-    public void SetConvertedImage(Image<TPixel> image)
+    public Image ConvertImage(IConverter<TPixel> converter)
     {
-        ConvertedImage = image;
-        Image = BitmapConverter.ToBitmap<TPixel>(image);
+        if (!IsImageSet)
+            return null;
+        var convertedImage = converter.Convert(ConvertedImage);
+        ConvertedImage = convertedImage;
+        Image = BitmapConverter.ToBitmap(convertedImage);
+        return new Bitmap(Image, Size);
+    }
+
+
+    public Bitmap ScaleImage(int delta)
+    {
+        Size = delta > 0
+            ? new Size((int) (Size.Width * scalingFactor), (int) (Size.Height * scalingFactor))
+            : new Size((int) (Size.Width / scalingFactor), (int) (Size.Height / scalingFactor));
+        return new Bitmap(Image, Size);
     }
 }
