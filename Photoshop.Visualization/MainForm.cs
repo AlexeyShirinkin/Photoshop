@@ -52,7 +52,7 @@ public sealed partial class MainForm : Form //todo все на async перед�
             throw new Exception();
         var convertedImage = converter.Convert(formState.ConvertedImage);
         formState.SetConvertedImage(convertedImage);
-        pictureBox.Image = formState.Image;
+        pictureBox.Image = new Bitmap(formState.Image, pictureBox.Image.Size);
         pictureBox.Update();
     }
 }
