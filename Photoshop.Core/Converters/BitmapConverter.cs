@@ -27,9 +27,9 @@ public static class BitmapConverter
         where TPixel : IPixel
     {
         var bitmap = new Bitmap(image.Width, image.Height);
-        for (var x = 0; x < image.Width; x++)
+        for (var x = 0; x < bitmap.Width; x++)
         {
-            for (var y = 0; y < image.Height; y++)
+            for (var y = 0; y < bitmap.Height; y++)
             {
                 var pixel = image[x, y];
                 bitmap.SetPixel(x, y, pixel.GetColor());

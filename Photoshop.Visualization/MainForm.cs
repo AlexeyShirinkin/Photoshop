@@ -18,7 +18,7 @@ public sealed partial class MainForm : Form //todo все на async перед�
         pictureBox = ViewElementsFactory.CreatePictureBox();
 
         Controls.Add(mainPanel);
-        Controls.Add(ViewElementsFactory.CreateToolStripMenu(OnClick,
+        Controls.Add(ViewElementsFactory.CreateToolStripMenu(OnLoadClick,
                                                              ApplicationSettings
                                                                  .GetConverters(new
                                                                      RgbConverterConvertersFactory()),
@@ -26,37 +26,23 @@ public sealed partial class MainForm : Form //todo все на async перед�
         mainPanel.Controls.Add(pictureBox);
     }
 
-    private void OnClick(object? sender, EventArgs eventArgs)
+    private void OnLoadClick(object? sender, EventArgs eventArgs)
     {
-        var loadedImage = ImageLoader.Load();
-        if (loadedImage == null)
-            return;
-        formState.Image?.Dispose();
-        formState.SetImage(loadedImage);
-        pictureBox.Image = loadedImage;
+        pictureBox.Image = formState.LoadImage();
     }
 
     private void PictureBoxOnMouseWheel(object? sender, MouseEventArgs e)
     {
-        if (ModifierKeys != Keys.Control)
+        if (ModifierKeys != Keys.Control || !formState.IsImageSet)
             return;
-
-        const double factor = 1.05;
-        var size = pictureBox.Image.Size;
-        var newSize = e.Delta > 0
-            ? new Size((int)(size.Width * factor), (int)(size.Height * factor))
-            : new Size((int)(size.Width / factor), (int)(size.Height / factor));
-        pictureBox.Image = new Bitmap(formState.Image, newSize);
+        
+        pictureBox.Image = formState.ScaleImage(e.Delta); 
         pictureBox.Update();
     }
 
     private void OnConverterClick(IConverter<RgbPixel> converter)
     {
-        if (formState.Image == null || pictureBox == null)
-            throw new Exception();
-        var convertedImage = converter.Convert(formState.ConvertedImage);
-        formState.SetConvertedImage(convertedImage);
-        pictureBox.Image = new Bitmap(formState.Image, pictureBox.Image.Size);
+        pictureBox.Image = formState.ConvertImage(converter); 
         pictureBox.Update();
     }
 }
