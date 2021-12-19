@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Drawing.Imaging;
 using Photoshop.Core.Factory;
 using Photoshop.Core.Models;
 
@@ -6,35 +7,70 @@ namespace Photoshop.Core.Converters;
 
 public static class BitmapConverter
 {
-    public static Image<TPixel>? FromBitmap<TPixel>(Bitmap bitmap,
-                                                    IPixelFactory<TPixel> pixelFactory)
+    public static Image<TPixel> FromBitmap<TPixel>(Bitmap bitmap, IPixelFactory<TPixel> pixelFactory)
         where TPixel : IPixel
     {
-        var pixels = new TPixel[bitmap.Width, bitmap.Height];
-        for (var x = 0; x < bitmap.Width; x++)
+        var width = bitmap.Width;
+        var height = bitmap.Height;
+        var bitmapData = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+
+        var pixels = new TPixel[width, height];
+
+        unsafe
         {
-            for (var y = 0; y < bitmap.Height; y++)
+            var pointer = (byte*) bitmapData.Scan0;
+
+            for (var y = 0; y < height; y++)
             {
-                var color = bitmap.GetPixel(x, y);
-                pixels[x, y] = pixelFactory.CreatePixelFromColor(color);
+                var tempPointer = pointer;
+                for (var x = 0; x < width; x++)
+                {
+                    var blue = *tempPointer++;
+                    var green = *tempPointer++;
+                    var red = *tempPointer++;
+                    var alpha = *tempPointer++;
+
+                    var color = Color.FromArgb(alpha, red, green, blue);
+                    pixels[x, y] = pixelFactory.CreatePixelFromColor(color);
+                }
+
+                pointer += bitmapData.Stride;
             }
         }
+
+        bitmap.UnlockBits(bitmapData);
 
         return new Image<TPixel>(pixels);
     }
 
-    public static Bitmap ToBitmap<TPixel>(Image<TPixel> image)
-        where TPixel : IPixel
+    public static Bitmap ToBitmap<TPixel>(Image<TPixel> image) where TPixel : IPixel
     {
-        var bitmap = new Bitmap(image.Width, image.Height);
-        for (var x = 0; x < bitmap.Width; x++)
+        var width = image.Width;
+        var height = image.Height;
+
+        var bitmap = new Bitmap(width, height);
+        var bitmapData = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+
+        unsafe
         {
-            for (var y = 0; y < bitmap.Height; y++)
+            var pointer = (byte*) bitmapData.Scan0;
+            
+            for (var y = 0; y < height; y++)
             {
-                var pixel = image[x, y];
-                bitmap.SetPixel(x, y, pixel.GetColor());
+                var tempPointer = pointer;
+                for (var x = 0; x < width; x++)
+                {
+                    var rgb = image[x, y].GetColor();
+                    *tempPointer++ = rgb.B;
+                    *tempPointer++ = rgb.G;
+                    *tempPointer++ = rgb.R;
+                }
+
+                pointer += bitmapData.Stride;
             }
         }
+
+        bitmap.UnlockBits(bitmapData);
 
         return bitmap;
     }
