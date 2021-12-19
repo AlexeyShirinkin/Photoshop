@@ -22,9 +22,9 @@ public class WindowIterator<TPixel> : IPixelIterator<TPixel[,], TPixel>
 
     public IEnumerable<PixelWrapper<TPixel[,]>> IterateImagePixel(Image<TPixel> image)
     {
-        for (var i = 0; i < image.Width; i++)
+        for (var i = 0; i < image.Width; ++i)
         {
-            for (var j = 0; j < image.Height; j++)
+            for (var j = 0; j < image.Height; ++j)
             {
                 yield return
                     new PixelWrapper<TPixel[,]>(i, j, GetNeighborhood(i, j, image));
@@ -36,20 +36,20 @@ public class WindowIterator<TPixel> : IPixelIterator<TPixel[,], TPixel>
     {
         var neighborhood = new TPixel[width, height];
         var rowCount = 0;
-        for (var k = i - width / 2; k < i + width / 2 + 1; k++)
+        for (var k = i - width / 2; k < i + width / 2 + 1; ++k)
         {
             var columnCount = 0;
-            for (var n = j - height / 2; n < j + height / 2 + 1; n++)
+            for (var n = j - height / 2; n < j + height / 2 + 1; ++n)
             {
                 if (IsImageContainsPixel(k, n, image.Width, image.Height))
                     neighborhood[rowCount, columnCount] =
                         (TPixel)image[k, n]; //todo not a good idea
                 else
                     neighborhood[rowCount, columnCount] = default(TPixel);
-                columnCount++;
+                ++columnCount;
             }
 
-            rowCount++;
+            ++rowCount;
         }
 
         return neighborhood;

@@ -23,8 +23,7 @@ public abstract class MatrixConverterBase<T, TPixel> : IPixelConverter<TPixel[,]
     {
         if (pixel.GetLength(0) != Width || pixel.GetLength(1) != Height)
             throw new Exception("Не свопадают размерности матрицы свертки ");
-        var aggregated = pixel.Enumerate(Convert)
-                              .Aggregate(Aggregate, Default);
+        var aggregated = pixel.Enumerate(Convert).Aggregate(Default, Aggregate);
         return ConvertToPixel(aggregated);
     }
 
