@@ -24,8 +24,7 @@ public abstract class ConverterBase<TResult, TInput, TPixel> : IConverter<TPixel
         var newPixels = new TResult[image.Width, image.Height];
         foreach (var pixelWrapper in pixelIterator.IterateImagePixel(image))
         {
-            var newPixel = pixelConverter.ConvertPixel(pixelWrapper.Item);
-            newPixels[pixelWrapper.X, pixelWrapper.Y] = newPixel;
+            newPixels[pixelWrapper.X, pixelWrapper.Y] = pixelConverter.ConvertPixel(pixelWrapper.Item);
         }
 
         return ToImage(newPixels);

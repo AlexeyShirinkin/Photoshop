@@ -13,28 +13,23 @@ public static class BitmapConverter
         var width = bitmap.Width;
         var height = bitmap.Height;
         var bitmapData = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-
+        var stride = bitmapData.Stride;
         var pixels = new TPixel[width, height];
 
         unsafe
         {
             var pointer = (byte*) bitmapData.Scan0;
 
-            for (var y = 0; y < height; y++)
+            for (var y = 0; y < height; ++y)
             {
                 var tempPointer = pointer;
-                for (var x = 0; x < width; x++)
+                for (var x = 0; x < width; ++x)
                 {
-                    var blue = *tempPointer++;
-                    var green = *tempPointer++;
-                    var red = *tempPointer++;
-                    var alpha = *tempPointer++;
-
-                    var color = Color.FromArgb(alpha, red, green, blue);
-                    pixels[x, y] = pixelFactory.CreatePixelFromColor(color);
+                    pixels[x, y] = pixelFactory.CreatePixelFromColors(*tempPointer++, *tempPointer++, *tempPointer++);
+                    ++tempPointer;
                 }
 
-                pointer += bitmapData.Stride;
+                pointer += stride;
             }
         }
 
@@ -54,11 +49,11 @@ public static class BitmapConverter
         unsafe
         {
             var pointer = (byte*) bitmapData.Scan0;
-            
-            for (var y = 0; y < height; y++)
+            var stride = bitmapData.Stride;
+            for (var y = 0; y < height; ++y)
             {
                 var tempPointer = pointer;
-                for (var x = 0; x < width; x++)
+                for (var x = 0; x < width; ++x)
                 {
                     var rgb = image[x, y].GetColor();
                     *tempPointer++ = rgb.B;
@@ -66,7 +61,7 @@ public static class BitmapConverter
                     *tempPointer++ = rgb.R;
                 }
 
-                pointer += bitmapData.Stride;
+                pointer += stride;
             }
         }
 
