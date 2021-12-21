@@ -5,8 +5,5 @@ namespace Photoshop.Core.Factory;
 
 public class RgbPixelFactory : IPixelFactory<RgbPixel>
 {
-    public RgbPixel CreatePixelFromColor(Color color)
-    {
-        return new RgbPixel(color.R, color.G, color.B);
-    }
+    public RgbPixel CreatePixelFromColors(byte blue, byte green, byte red) => new(red, green, blue);
 }

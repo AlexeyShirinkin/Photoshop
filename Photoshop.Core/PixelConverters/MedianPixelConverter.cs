@@ -6,10 +6,7 @@ public class MedianPixelConverter : IPixelConverter<IEnumerable<RgbPixel>, RgbPi
 {
     public RgbPixel ConvertPixel(IEnumerable<RgbPixel> pixel)
     {
-        var pixels = pixel.ToList();
-        pixels.Sort((pixel1, pixel2) => pixel1.Brightness.CompareTo(pixel2.Brightness));
-        if (pixels.Count % 2 == 0)
-            return pixels[pixels.Count / 2 - 1];
-        return pixels[pixels.Count / 2];
+        var pixels = pixel.OrderBy(pixel1 => pixel1.Brightness).ToList();
+        return pixels.Count % 2 != 0 ? pixels[pixels.Count / 2 + 1] : pixels[pixels.Count / 2];
     }
 }

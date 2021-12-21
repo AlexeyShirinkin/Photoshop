@@ -4,5 +4,5 @@ namespace Photoshop.Core.Factory;
 
 public interface IPixelFactory<out TPixel>
 {
-    TPixel CreatePixelFromColor(Color color);
+    TPixel CreatePixelFromColors(byte blue, byte green, byte red);
 }

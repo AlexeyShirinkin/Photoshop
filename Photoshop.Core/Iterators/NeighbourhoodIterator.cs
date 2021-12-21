@@ -15,9 +15,9 @@ public class NeighbourhoodIterator<TPixel> : IPixelIterator<IEnumerable<TPixel>,
 
     public IEnumerable<PixelWrapper<IEnumerable<TPixel>>> IterateImagePixel(Image<TPixel> image)
     {
-        for (var i = 0; i < image.Width; i++)
+        for (var i = 0; i < image.Width; ++i)
         {
-            for (var j = 0; j < image.Height; j++)
+            for (var j = 0; j < image.Height; ++j)
             {
                 yield return
                     new PixelWrapper<IEnumerable<TPixel>>(i, j, GetNeighborhood(i, j, image));
@@ -27,17 +27,14 @@ public class NeighbourhoodIterator<TPixel> : IPixelIterator<IEnumerable<TPixel>,
 
     private IEnumerable<TPixel> GetNeighborhood(int i, int j, Image<TPixel> image)
     {
-        var neighborhood = new List<TPixel>(coefficient * coefficient);
-        for (var k = i - coefficient; k < i + coefficient + 1; k++)
+        for (var k = i - coefficient; k < i + coefficient + 1; ++k)
         {
-            for (var n = j - coefficient; n < j + coefficient + 1; n++)
+            for (var n = j - coefficient; n < j + coefficient + 1; ++n)
             {
                 if (IsImageContainsPixel(k, n, image.Width, image.Height))
-                    neighborhood.Add(image[k, n]);
+                    yield return image[k, n];
             }
         }
-
-        return neighborhood;
     }
 
     private static bool IsImageContainsPixel(int i, int j, int width, int height)
