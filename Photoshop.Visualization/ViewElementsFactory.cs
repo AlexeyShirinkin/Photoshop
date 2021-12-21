@@ -23,7 +23,7 @@ public static class ViewElementsFactory
     }
 
     public static MenuStrip CreateToolStripMenu<TPixel>(EventHandler onLoad,
-                                                        IReadOnlyCollection<ConvertMenuItem<TPixel>>
+                                                        IEnumerable<ConvertMenuItem<TPixel>>
                                                             convertMenuItems,
                                                         Action<IConverter<TPixel>> onClick,
                                                         EventHandler onUndo,

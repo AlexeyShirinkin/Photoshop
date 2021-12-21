@@ -1,5 +1,4 @@
 using Photoshop.Core.Converters;
-using Photoshop.Core.Factory;
 using Photoshop.Core.Models;
 
 namespace Photoshop.Visualization;
@@ -8,22 +7,24 @@ public sealed partial class MainForm : Form //todo все на async перед�
 {
     private readonly FormState<RgbPixel> formState;
     private readonly PictureBox pictureBox;
-    private readonly Panel mainPanel;
+    private readonly IConvertMenuItemFactory<RgbPixel> convertMenuItemFactory;
 
-    public MainForm()
+    public MainForm(FormState<RgbPixel> formState,
+                    IConvertMenuItemFactory<RgbPixel>
+                        convertMenuItemFactory) //todo плохая завязка на RgbPixel
     {
-        formState = new FormState<RgbPixel>(new RgbPixelFactory());
+        this.formState = formState;
+        this.convertMenuItemFactory = convertMenuItemFactory;
         WindowState = FormWindowState.Maximized;
-        mainPanel = ViewElementsFactory.CreateLayoutPanel(PictureBoxOnMouseWheel);
+        var mainPanel = ViewElementsFactory.CreateLayoutPanel(PictureBoxOnMouseWheel);
         pictureBox = ViewElementsFactory.CreatePictureBox();
-
         Controls.Add(mainPanel);
         Controls.Add(ViewElementsFactory.CreateToolStripMenu(
-            OnLoadClick,
-            ApplicationSettings.GetConverters(new RgbConverterConvertersFactory()),
-            OnConverterClick,
-            OnUndoClick,
-            OnRedoClick));
+                                                             OnLoadClick,
+                                                             convertMenuItemFactory.Create(),
+                                                             OnConverterClick,
+                                                             OnUndoClick,
+                                                             OnRedoClick));
         mainPanel.Controls.Add(pictureBox);
     }
 

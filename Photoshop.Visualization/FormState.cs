@@ -39,7 +39,9 @@ public class FormState<TPixel>
         if (!IsImageSet)
             return null;
         var convertedImage = converter.Convert(ConvertedImage
-                                               ?? BitmapConverter.FromBitmap(new Bitmap(history.Peek()), pixelFactory));
+                                               ?? BitmapConverter
+                                                   .FromBitmap(new Bitmap(history.Peek()),
+                                                               pixelFactory));
         ConvertedImage = convertedImage;
         history.Push(BitmapConverter.ToBitmap(convertedImage));
         changes.Clear();
@@ -67,8 +69,8 @@ public class FormState<TPixel>
     public Bitmap ScaleImage(int delta)
     {
         Size = delta > 0
-            ? new Size((int) (Size.Width * scalingFactor), (int) (Size.Height * scalingFactor))
-            : new Size((int) (Size.Width / scalingFactor), (int) (Size.Height / scalingFactor));
+            ? new Size((int)(Size.Width * scalingFactor), (int)(Size.Height * scalingFactor))
+            : new Size((int)(Size.Width / scalingFactor), (int)(Size.Height / scalingFactor));
         return new Bitmap(history.Peek(), Size);
     }
 }
