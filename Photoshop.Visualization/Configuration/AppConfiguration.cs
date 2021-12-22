@@ -41,7 +41,7 @@ public static class AppConfiguration
         bindingRoot.Bind<WindowIterator<TPixel>>()
                    .ToMethod(context => new WindowIterator<TPixel>(5))
                    .WhenInjectedInto<RgbGaussConverter>()
-                   .InSingletonScope(); //todo костылище пиздец
+                   .InSingletonScope(); //todo костылище
     }
 
     private static void ConfigurePixelIterators<TPixel>(IBindingRoot bindingRoot)
