@@ -4,8 +4,7 @@ using Photoshop.Core.Models;
 
 namespace Photoshop.Visualization;
 
-public class FormState<TPixel>
-    where TPixel : IPixel
+public class FormState<TPixel> where TPixel : IPixel
 {
     public bool IsImageSet => history.Count != 0;
     private Size Size { get; set; }

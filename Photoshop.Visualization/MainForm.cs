@@ -8,6 +8,7 @@ public sealed partial class MainForm : Form //todo все на async перед�
     private readonly FormState<RgbPixel> formState;
     private readonly PictureBox pictureBox;
     private readonly IConvertMenuItemFactory<RgbPixel> convertMenuItemFactory;
+    private readonly Panel mainPanel;
 
     public MainForm(FormState<RgbPixel> formState,
                     IConvertMenuItemFactory<RgbPixel>
@@ -16,7 +17,7 @@ public sealed partial class MainForm : Form //todo все на async перед�
         this.formState = formState;
         this.convertMenuItemFactory = convertMenuItemFactory;
         WindowState = FormWindowState.Maximized;
-        var mainPanel = ViewElementsFactory.CreateLayoutPanel(PictureBoxOnMouseWheel);
+        mainPanel = ViewElementsFactory.CreateLayoutPanel(PictureBoxOnMouseWheel);
         pictureBox = ViewElementsFactory.CreatePictureBox();
         Controls.Add(mainPanel);
         Controls.Add(ViewElementsFactory.CreateToolStripMenu(
@@ -49,12 +50,14 @@ public sealed partial class MainForm : Form //todo все на async перед�
             return;
 
         pictureBox.Image = formState.ScaleImage(e.Delta);
-        pictureBox.Update();
+
+        if (e.Delta <= 0) return;
+        mainPanel.HorizontalScroll.Value = (int) (e.X / (double) mainPanel.Width * mainPanel.HorizontalScroll.Maximum);
+        mainPanel.VerticalScroll.Value = (int) (e.Y / (double) mainPanel.Height * mainPanel.VerticalScroll.Maximum);
     }
 
     private void OnConverterClick(IConverter<RgbPixel> converter)
     {
         pictureBox.Image = formState.ConvertImage(converter);
-        pictureBox.Update();
     }
 }
