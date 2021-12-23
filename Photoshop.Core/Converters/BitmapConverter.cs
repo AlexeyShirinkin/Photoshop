@@ -12,7 +12,8 @@ public static class BitmapConverter
     {
         var width = bitmap.Width;
         var height = bitmap.Height;
-        var bitmapData = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+        var bitmapData = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly,
+            PixelFormat.Format32bppArgb);
         var stride = bitmapData.Stride;
         var pixels = new TPixel[width, height];
 
@@ -44,7 +45,8 @@ public static class BitmapConverter
         var height = image.Height;
 
         var bitmap = new Bitmap(width, height);
-        var bitmapData = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+        var bitmapData = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly,
+            PixelFormat.Format24bppRgb);
 
         unsafe
         {

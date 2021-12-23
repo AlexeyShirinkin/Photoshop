@@ -8,11 +8,7 @@ public static class MatrixExtensions
         var width = matrix.GetLength(0);
         var height = matrix.GetLength(1);
         for (var i = 0; i < width; i++)
-        {
             for (var j = 0; j < height; j++)
-            {
                 yield return selector(matrix[i, j], i, j);
-            }
-        }
     }
 }

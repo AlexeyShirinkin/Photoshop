@@ -12,8 +12,5 @@ public abstract class RgbConverterBase<TIterate> : ConverterBase<RgbPixel, TIter
     {
     }
 
-    protected override Image<RgbPixel> ToImage(RgbPixel[,] pixels)
-    {
-        return new Image<RgbPixel>(pixels);
-    }
+    protected override Image<RgbPixel> ToImage(RgbPixel[,] pixels) => new(pixels);
 }

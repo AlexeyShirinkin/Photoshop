@@ -16,10 +16,7 @@ public class FormState<TPixel> where TPixel : IPixel
     private readonly Stack<Image> changes = new();
 
 
-    public FormState(IPixelFactory<TPixel> pixelFactory)
-    {
-        this.pixelFactory = pixelFactory;
-    }
+    public FormState(IPixelFactory<TPixel> pixelFactory) => this.pixelFactory = pixelFactory;
 
     public Image LoadImage()
     {
@@ -37,10 +34,9 @@ public class FormState<TPixel> where TPixel : IPixel
     {
         if (!IsImageSet)
             return null;
-        var convertedImage = converter.Convert(ConvertedImage
-                                               ?? BitmapConverter
-                                                   .FromBitmap(new Bitmap(history.Peek()),
-                                                               pixelFactory));
+        
+        var convertedImage = converter.Convert(ConvertedImage ?? BitmapConverter.FromBitmap(
+            new Bitmap(history.Peek()), pixelFactory));
         ConvertedImage = convertedImage;
         history.Push(BitmapConverter.ToBitmap(convertedImage));
         changes.Clear();
@@ -53,7 +49,9 @@ public class FormState<TPixel> where TPixel : IPixel
             return null;
         changes.Push(history.Pop());
         ConvertedImage = null;
-        return IsImageSet ? new Bitmap(history.Peek(), Size) : null;
+        return IsImageSet 
+            ? new Bitmap(history.Peek(), Size)
+            : null;
     }
 
     public Image Redo()
@@ -61,7 +59,9 @@ public class FormState<TPixel> where TPixel : IPixel
         if (changes.Count != 0)
             history.Push(changes.Pop());
         ConvertedImage = null;
-        return IsImageSet ? new Bitmap(history.Peek(), Size) : null;
+        return IsImageSet 
+            ? new Bitmap(history.Peek(), Size)
+            : null;
     }
 
 

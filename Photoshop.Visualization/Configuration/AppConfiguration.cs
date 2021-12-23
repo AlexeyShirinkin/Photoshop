@@ -20,8 +20,7 @@ public static class AppConfiguration
 
         kernel.Bind<IPixelFactory<RgbPixel>>().To<RgbPixelFactory>().InSingletonScope();
         kernel.Bind<FormState<RgbPixel>>().ToSelf().InSingletonScope();
-        kernel.Bind<IConvertMenuItemFactory<RgbPixel>>().To<ConvertMenuItemFactory<RgbPixel>>()
-              .InSingletonScope();
+        kernel.Bind<IConvertMenuItemFactory<RgbPixel>>().To<ConvertMenuItemFactory<RgbPixel>>().InSingletonScope();
     }
 
     private static void ConfigureIterators<TPixel>(IBindingRoot bindingRoot)

@@ -26,10 +26,8 @@ public class PixelMatrixConverterBase : MatrixConverterBase<PixelRecord, RgbPixe
 
     protected override PixelRecord Default => new();
 
-    protected override RgbPixel ConvertToPixel(PixelRecord result)
-    {
-        return new RgbPixel((result.R / Coefficient).ToByte(),
+    protected override RgbPixel ConvertToPixel(PixelRecord result) =>
+        new((result.R / Coefficient).ToByte(),
             (result.G / Coefficient).ToByte(),
             (result.B / Coefficient).ToByte());
-    }
 }

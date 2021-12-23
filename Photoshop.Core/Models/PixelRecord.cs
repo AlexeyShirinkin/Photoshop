@@ -11,9 +11,9 @@ public record PixelRecord
 
     public PixelRecord Aggregate(PixelRecord other, int scale)
     {
-        B = B + other.B * scale;
-        G = G + other.G * scale;
-        R = R + other.R * scale;
+        B += other.B * scale;
+        G += other.G * scale;
+        R += other.R * scale;
         return this;
     }
 }

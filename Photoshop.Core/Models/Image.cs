@@ -1,13 +1,11 @@
 ﻿namespace Photoshop.Core.Models;
 
-public class Image<TPixel>
-    where TPixel : IPixel
+public class Image<TPixel> where TPixel : IPixel
 {
     public int Width { get; }
     public int Height { get; }
 
-    private readonly TPixel[,]
-        pixels; //TODO: зависимость от пикселей нехорошо,можно переделать на какую-нибудь абстракццию
+    private readonly TPixel[,] pixels; //TODO: зависимость от пикселей нехорошо, можно переделать на какую-нибудь абстракццию
 
     public Image(TPixel[,] pixels)
     {

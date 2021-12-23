@@ -11,7 +11,7 @@ public abstract class ConverterBase<TResult, TInput, TPixel> : IConverter<TPixel
     private readonly IPixelIterator<TInput, TPixel> pixelIterator;
 
     protected ConverterBase(IPixelConverter<TInput, TResult> pixelConverter,
-                            IPixelIterator<TInput, TPixel> pixelIterator)
+        IPixelIterator<TInput, TPixel> pixelIterator)
     {
         this.pixelConverter = pixelConverter;
         this.pixelIterator = pixelIterator;
@@ -23,9 +23,7 @@ public abstract class ConverterBase<TResult, TInput, TPixel> : IConverter<TPixel
             throw new ArgumentNullException(nameof(image));
         var newPixels = new TResult[image.Width, image.Height];
         foreach (var pixelWrapper in pixelIterator.IterateImagePixel(image))
-        {
             newPixels[pixelWrapper.X, pixelWrapper.Y] = pixelConverter.ConvertPixel(pixelWrapper.Item);
-        }
 
         return ToImage(newPixels);
     }

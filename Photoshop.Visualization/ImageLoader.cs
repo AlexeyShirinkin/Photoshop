@@ -10,14 +10,12 @@ public static class ImageLoader
 
         if (openDialog.ShowDialog() != DialogResult.OK)
         {
-            MessageBox.Show("Unable to open provider", "Error", MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
+            MessageBox.Show("Unable to open provider", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return null;
         }
 
         if (!TryGetImage(openDialog.FileName, out var image))
-            MessageBox.Show("Unable to open file", "Error", MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
+            MessageBox.Show("Unable to open file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
         return image;
     }

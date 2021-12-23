@@ -9,7 +9,7 @@ public static class ViewElementsFactory
     public static PictureBox CreatePictureBox() =>
         new()
         {
-            AutoSize = true,
+            AutoSize = true
         };
 
     public static Panel CreateLayoutPanel(MouseEventHandler mouseEventHandler)
@@ -22,12 +22,12 @@ public static class ViewElementsFactory
         return panel;
     }
 
-    public static MenuStrip CreateToolStripMenu<TPixel>(EventHandler onLoad,
-                                                        IEnumerable<ConvertMenuItem<TPixel>>
-                                                            convertMenuItems,
-                                                        Action<IConverter<TPixel>> onClick,
-                                                        EventHandler onUndo,
-                                                        EventHandler onRedo)
+    public static MenuStrip CreateToolStripMenu<TPixel>(
+        EventHandler onLoad,
+        IEnumerable<ConvertMenuItem<TPixel>> convertMenuItems,
+        Action<IConverter<TPixel>> onClick,
+        EventHandler onUndo,
+        EventHandler onRedo) 
         where TPixel : IPixel
     {
         var menu = new MenuStrip();
@@ -37,11 +37,10 @@ public static class ViewElementsFactory
         menu.BackColor = Color.WhiteSmoke;
 
         return menu
-               .With(CreateFileItem("File")
-                         .With(CreateToolStripMenuItem("Load", onLoad)))
-               .With(GetTransformMenu(convertMenuItems, onClick))
-               .With(CreateToolStripMenuItem("Undo", onUndo))
-               .With(CreateToolStripMenuItem("Redo", onRedo));
+            .With(CreateFileItem("File").With(CreateToolStripMenuItem("Load", onLoad)))
+            .With(GetTransformMenu(convertMenuItems, onClick))
+            .With(CreateToolStripMenuItem("Undo", onUndo))
+            .With(CreateToolStripMenuItem("Redo", onRedo));
     }
 
     private static ToolStripMenuItem GetTransformMenu<TPixel>(
@@ -51,20 +50,15 @@ public static class ViewElementsFactory
     {
         var menuItem = CreateFileItem("Transform");
         return convertMenuItems.Aggregate(menuItem,
-                                          (current, convertMenuItem) =>
-                                              current
-                                                  .With(CreateToolStripMenuItem<
-                                                            TPixel>(convertMenuItem.MenuName,
-                                                         onClick, convertMenuItem.Converter)));
+            (current, convertMenuItem) => current.With(
+                CreateToolStripMenuItem(convertMenuItem.MenuName, onClick, convertMenuItem.Converter)));
     }
 
-    private static ToolStripMenuItem CreateFileItem(string text)
-    {
-        return new ToolStripMenuItem(text);
-    }
+    private static ToolStripMenuItem CreateFileItem(string text) => new ToolStripMenuItem(text);
 
     private static ToolStripMenuItem CreateToolStripMenuItem<TPixel>(
-        string text, Action<IConverter<TPixel>> onClick,
+        string text,
+        Action<IConverter<TPixel>> onClick,
         IConverter<TPixel> converter)
         where TPixel : IPixel
     {

@@ -6,8 +6,7 @@ namespace Photoshop.Core.Converters.RgbConverters;
 
 public class RgbBlurConverter : RgbConverterBase<RgbPixel[,]>
 {
-    public RgbBlurConverter(BlurPixelConverter pixelConverter,
-                            WindowIterator<RgbPixel> pixelIterator) :
+    public RgbBlurConverter(BlurPixelConverter pixelConverter, WindowIterator<RgbPixel> pixelIterator) :
         base(pixelConverter, pixelIterator)
     {
     }

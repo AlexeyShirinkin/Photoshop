@@ -6,8 +6,7 @@ namespace Photoshop.Core.Converters.RgbConverters;
 
 public class RgbSharpnessConverter : RgbConverterBase<RgbPixel[,]>
 {
-    public RgbSharpnessConverter(SharpnessPixelConverter pixelConverter,
-                                 WindowIterator<RgbPixel> pixelIterator) :
+    public RgbSharpnessConverter(SharpnessPixelConverter pixelConverter, WindowIterator<RgbPixel> pixelIterator) :
         base(pixelConverter, pixelIterator)
     {
     }

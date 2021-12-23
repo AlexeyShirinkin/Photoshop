@@ -20,8 +20,7 @@ public sealed partial class MainForm : Form //todo все на async перед�
         mainPanel = ViewElementsFactory.CreateLayoutPanel(PictureBoxOnMouseWheel);
         pictureBox = ViewElementsFactory.CreatePictureBox();
         Controls.Add(mainPanel);
-        Controls.Add(ViewElementsFactory.CreateToolStripMenu(
-                                                             OnLoadClick,
+        Controls.Add(ViewElementsFactory.CreateToolStripMenu(OnLoadClick,
                                                              convertMenuItemFactory.Create(),
                                                              OnConverterClick,
                                                              OnUndoClick,
@@ -29,20 +28,11 @@ public sealed partial class MainForm : Form //todo все на async перед�
         mainPanel.Controls.Add(pictureBox);
     }
 
-    private void OnLoadClick(object? sender, EventArgs eventArgs)
-    {
-        pictureBox.Image = formState.LoadImage();
-    }
+    private void OnLoadClick(object? sender, EventArgs eventArgs) => pictureBox.Image = formState.LoadImage();
 
-    private void OnUndoClick(object? sender, EventArgs eventArgs)
-    {
-        pictureBox.Image = formState.Undo();
-    }
+    private void OnUndoClick(object? sender, EventArgs eventArgs) => pictureBox.Image = formState.Undo();
 
-    private void OnRedoClick(object? sender, EventArgs eventArgs)
-    {
-        pictureBox.Image = formState.Redo();
-    }
+    private void OnRedoClick(object? sender, EventArgs eventArgs) => pictureBox.Image = formState.Redo();
 
     private void PictureBoxOnMouseWheel(object? sender, MouseEventArgs e)
     {
@@ -56,8 +46,5 @@ public sealed partial class MainForm : Form //todo все на async перед�
         mainPanel.VerticalScroll.Value = (int) (e.Y / (double) mainPanel.Height * mainPanel.VerticalScroll.Maximum);
     }
 
-    private void OnConverterClick(IConverter<RgbPixel> converter)
-    {
-        pictureBox.Image = formState.ConvertImage(converter);
-    }
+    private void OnConverterClick(IConverter<RgbPixel> converter) => pictureBox.Image = formState.ConvertImage(converter);
 }
