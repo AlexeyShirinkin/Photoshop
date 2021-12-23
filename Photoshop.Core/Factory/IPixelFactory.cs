@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace Photoshop.Core.Factory;
+﻿namespace Photoshop.Core.Factory;
 
 public interface IPixelFactory<out TPixel>
 {

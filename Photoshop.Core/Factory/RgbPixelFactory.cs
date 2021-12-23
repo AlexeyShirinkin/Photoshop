@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using Photoshop.Core.Models;
+﻿using Photoshop.Core.Models;
 
 namespace Photoshop.Core.Factory;
 
