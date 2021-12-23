@@ -10,9 +10,7 @@ public sealed partial class MainForm : Form //todo все на async перед�
     private readonly IConvertMenuItemFactory<RgbPixel> convertMenuItemFactory;
     private readonly Panel mainPanel;
 
-    public MainForm(FormState<RgbPixel> formState,
-                    IConvertMenuItemFactory<RgbPixel>
-                        convertMenuItemFactory) //todo плохая завязка на RgbPixel
+    public MainForm(FormState<RgbPixel> formState, IConvertMenuItemFactory<RgbPixel> convertMenuItemFactory) //todo плохая завязка на RgbPixel
     {
         this.formState = formState;
         this.convertMenuItemFactory = convertMenuItemFactory;

@@ -7,16 +7,18 @@ namespace Photoshop.Visualization;
 public class FormState<TPixel> where TPixel : IPixel
 {
     public bool IsImageSet => history.Count != 0;
-    private Size Size { get; set; }
     private Image<TPixel>? ConvertedImage { get; set; }
     private readonly IPixelFactory<TPixel> pixelFactory;
-    private readonly double scalingFactor = 1.05;
+    private const double ScalingFactor = 1.05;
 
-    private readonly Stack<Image> history = new();
-    private readonly Stack<Image> changes = new();
+    private readonly Stack<(Image, Size)> history = new();
+    private readonly Stack<(Image, Size)> changes = new();
 
 
-    public FormState(IPixelFactory<TPixel> pixelFactory) => this.pixelFactory = pixelFactory;
+    public FormState(IPixelFactory<TPixel> pixelFactory)
+    {
+        this.pixelFactory = pixelFactory;
+    }
 
     public Image LoadImage()
     {
@@ -24,23 +26,24 @@ public class FormState<TPixel> where TPixel : IPixel
         changes.Clear();
         if (newImage is null)
             throw new FileLoadException("Не получилось загрузить файл");
-        Size = newImage.Size;
-        history.Push(newImage);
-        ConvertedImage = BitmapConverter.FromBitmap(new Bitmap(history.Peek()), pixelFactory);
-        return history.Peek();
+        history.Push((newImage, newImage.Size));
+        ConvertedImage = BitmapConverter.FromBitmap(new Bitmap(history.Peek().Item1), pixelFactory);
+        return history.Peek().Item1;
     }
 
     public Image ConvertImage(IConverter<TPixel> converter)
     {
         if (!IsImageSet)
             return null;
-        
-        var convertedImage = converter.Convert(ConvertedImage ?? BitmapConverter.FromBitmap(
-            new Bitmap(history.Peek()), pixelFactory));
+        var convertedImage = converter.Convert(ConvertedImage
+                                               ?? BitmapConverter
+                                                   .FromBitmap(new Bitmap(history.Peek().Item1),
+                                                               pixelFactory));
         ConvertedImage = convertedImage;
-        history.Push(BitmapConverter.ToBitmap(convertedImage));
+        history.Push((BitmapConverter.ToBitmap(convertedImage), history.Peek().Item2));
         changes.Clear();
-        return new Bitmap(history.Peek(), Size);
+        var (image, size) = history.Peek();
+        return new Bitmap(image, size);
     }
 
     public Image Undo()
@@ -49,9 +52,11 @@ public class FormState<TPixel> where TPixel : IPixel
             return null;
         changes.Push(history.Pop());
         ConvertedImage = null;
-        return IsImageSet 
-            ? new Bitmap(history.Peek(), Size)
-            : null;
+
+        if (!IsImageSet) 
+            return null;
+        var (image, size) = history.Peek();
+        return new Bitmap(image, size);
     }
 
     public Image Redo()
@@ -59,17 +64,21 @@ public class FormState<TPixel> where TPixel : IPixel
         if (changes.Count != 0)
             history.Push(changes.Pop());
         ConvertedImage = null;
-        return IsImageSet 
-            ? new Bitmap(history.Peek(), Size)
-            : null;
+
+        if (!IsImageSet) 
+            return null;
+        var (image, size) = history.Peek();
+        return new Bitmap(image, size);
     }
 
 
     public Bitmap ScaleImage(int delta)
     {
-        Size = delta > 0
-            ? new Size((int)(Size.Width * scalingFactor), (int)(Size.Height * scalingFactor))
-            : new Size((int)(Size.Width / scalingFactor), (int)(Size.Height / scalingFactor));
-        return new Bitmap(history.Peek(), Size);
+        var (image, size) = history.Pop();
+        history.Push((image, delta > 0
+            ? new Size((int)(size.Width * ScalingFactor), (int)(size.Height * ScalingFactor))
+            : new Size((int)(size.Width / ScalingFactor), (int)(size.Height / ScalingFactor))));
+
+        return new Bitmap(history.Peek().Item1, history.Peek().Item2);
     }
 }
