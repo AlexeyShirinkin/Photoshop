@@ -3,13 +3,12 @@ using Photoshop.Core.Models;
 
 namespace Photoshop.Core.Factory;
 
-public interface IConvertersFactory<TPixel>
-    where TPixel : IPixel
+public interface IConvertersFactory
 {
-    IConverter<TPixel> CreateBlurConverter();
-    IConverter<TPixel> CreateEmbossingConverter();
-    IConverter<TPixel> CreateGaussConverter();
-    IConverter<TPixel> CreateGrayScaleConverter();
-    IConverter<TPixel> CreateMedianConverter();
-    IConverter<TPixel> CreateSharpnessConverter();
+    IConverter CreateBlurConverter();
+    IConverter CreateEmbossingConverter();
+    IConverter CreateGaussConverter();
+    IConverter CreateGrayScaleConverter();
+    IConverter CreateMedianConverter();
+    IConverter CreateSharpnessConverter();
 }

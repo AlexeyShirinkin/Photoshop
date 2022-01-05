@@ -4,7 +4,6 @@ using Photoshop.Core.Utilities;
 namespace Photoshop.Core.PixelConverters;
 
 public abstract class MatrixConverterBase<T, TPixel> : IPixelConverter<TPixel[,], TPixel>
-    where TPixel : IPixel
 {
     protected readonly int[,] Matrix;
     protected readonly int Coefficient;

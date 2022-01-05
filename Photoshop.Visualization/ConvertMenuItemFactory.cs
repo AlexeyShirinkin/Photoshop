@@ -3,16 +3,15 @@ using Photoshop.Core.Models;
 
 namespace Photoshop.Visualization;
 
-public class ConvertMenuItemFactory<TPixel> : IConvertMenuItemFactory<TPixel>
-    where TPixel : IPixel
+public class ConvertMenuItemFactory : IConvertMenuItemFactory
 {
-    private readonly IEnumerable<IConverter<TPixel>> converters;
+    private readonly IEnumerable<IConverter> converters;
 
-    public ConvertMenuItemFactory(IEnumerable<IConverter<TPixel>> converters) => this.converters = converters;
+    public ConvertMenuItemFactory(IEnumerable<IConverter> converters) => this.converters = converters;
 
-    public IEnumerable<ConvertMenuItem<TPixel>> Create() //todo плохая завязка на имя
+    public IEnumerable<ConvertMenuItem> Create() //todo плохая завязка на имя
         => converters
             .Select(converter => new { converter, name = converter.GetType().Name })
-            .Select(t => new ConvertMenuItem<TPixel>(t.converter, 
+            .Select(t => new ConvertMenuItem(t.converter, 
                 $"{t.name.Substring(3, t.name.Length - 12)} Filter"));
 }

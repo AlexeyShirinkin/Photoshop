@@ -1,21 +1,22 @@
 ﻿using Photoshop.Core.Converters;
 using Photoshop.Core.Factory;
 using Photoshop.Core.Models;
+using Image = System.Drawing.Image;
 
 namespace Photoshop.Visualization;
 
-public class FormState<TPixel> where TPixel : IPixel
+public class FormState
 {
     public bool IsImageSet => history.Count != 0;
-    private Image<TPixel>? ConvertedImage { get; set; }
-    private readonly IPixelFactory<TPixel> pixelFactory;
+    private Photoshop.Core.Models.Image? ConvertedImage { get; set; }
+    private readonly IPixelFactory<Color> pixelFactory;
     private const double ScalingFactor = 1.05;
 
     private readonly Stack<(Image, Size)> history = new();
     private readonly Stack<(Image, Size)> changes = new();
 
 
-    public FormState(IPixelFactory<TPixel> pixelFactory)
+    public FormState(IPixelFactory<Color> pixelFactory)
     {
         this.pixelFactory = pixelFactory;
     }
@@ -31,7 +32,7 @@ public class FormState<TPixel> where TPixel : IPixel
         return history.Peek().Item1;
     }
 
-    public Image ConvertImage(IConverter<TPixel> converter)
+    public Image ConvertImage(IConverter converter)
     {
         if (!IsImageSet)
             return null;

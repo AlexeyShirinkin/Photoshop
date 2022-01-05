@@ -3,12 +3,12 @@ using Photoshop.Core.Models;
 
 namespace Photoshop.Visualization;
 
-public class ConvertMenuItem<TPixel> where TPixel : IPixel
+public class ConvertMenuItem
 {
-    public IConverter<TPixel> Converter { get; }
+    public IConverter Converter { get; }
     public string MenuName { get; }
 
-    public ConvertMenuItem(IConverter<TPixel> converter, string menuName)
+    public ConvertMenuItem(IConverter converter, string menuName)
     {
         Converter = converter;
         MenuName = menuName;

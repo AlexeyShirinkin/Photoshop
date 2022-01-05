@@ -1,12 +1,12 @@
-using Photoshop.Core.Models;
+using System.Drawing;
 
 namespace Photoshop.Core.PixelConverters;
 
-public class GrayScalePixelConverter : IPixelConverter<RgbPixel, RgbPixel>
+public class GrayScalePixelConverter : IPixelConverter<Color, Color>
 {
-    public RgbPixel ConvertPixel(RgbPixel rgbPixel)
+    public Color ConvertPixel(Color rgbPixel)
     {
         var average = (byte)((rgbPixel.B + rgbPixel.G + rgbPixel.R) / 3);
-        return new RgbPixel(average, average, average);
+        return Color.FromArgb(average, average, average);
     }
 }

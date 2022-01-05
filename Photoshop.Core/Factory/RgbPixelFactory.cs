@@ -1,8 +1,8 @@
-﻿using Photoshop.Core.Models;
+﻿using System.Drawing;
 
 namespace Photoshop.Core.Factory;
 
-public class RgbPixelFactory : IPixelFactory<RgbPixel>
+public class RgbPixelFactory : IPixelFactory<Color>
 {
-    public RgbPixel CreatePixelFromColors(byte blue, byte green, byte red) => new(red, green, blue);
+    public Color CreatePixelFromColors(byte blue, byte green, byte red) => Color.FromArgb(red, green, blue);
 }

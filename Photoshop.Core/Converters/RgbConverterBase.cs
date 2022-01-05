@@ -1,16 +1,17 @@
-﻿using Photoshop.Core.Iterators;
-using Photoshop.Core.Models;
+﻿using System.Drawing;
+using Photoshop.Core.Iterators;
 using Photoshop.Core.PixelConverters;
+using Image = Photoshop.Core.Models.Image;
 
 namespace Photoshop.Core.Converters;
 
-public abstract class RgbConverterBase<TIterate> : ConverterBase<RgbPixel, TIterate, RgbPixel>
+public abstract class RgbConverterBase<TIterate> : ConverterBase<Color, TIterate>
 {
-    protected RgbConverterBase(IPixelConverter<TIterate, RgbPixel> pixelConverter,
-                               IPixelIterator<TIterate, RgbPixel> pixelIterator)
+    protected RgbConverterBase(IPixelConverter<TIterate, Color> pixelConverter,
+                               IPixelIterator<TIterate> pixelIterator)
         : base(pixelConverter, pixelIterator)
     {
     }
 
-    protected override Image<RgbPixel> ToImage(RgbPixel[,] pixels) => new(pixels);
+    protected override Image ToImage(Color[,] pixels) => new(pixels);
 }

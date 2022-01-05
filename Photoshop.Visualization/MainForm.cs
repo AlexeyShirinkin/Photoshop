@@ -5,12 +5,12 @@ namespace Photoshop.Visualization;
 
 public sealed partial class MainForm : Form //todo все на async переделать
 {
-    private readonly FormState<RgbPixel> formState;
+    private readonly FormState formState;
     private readonly PictureBox pictureBox;
-    private readonly IConvertMenuItemFactory<RgbPixel> convertMenuItemFactory;
+    private readonly IConvertMenuItemFactory convertMenuItemFactory;
     private readonly Panel mainPanel;
 
-    public MainForm(FormState<RgbPixel> formState, IConvertMenuItemFactory<RgbPixel> convertMenuItemFactory) //todo плохая завязка на RgbPixel
+    public MainForm(FormState formState, IConvertMenuItemFactory convertMenuItemFactory) //todo плохая завязка на RgbPixel
     {
         this.formState = formState;
         this.convertMenuItemFactory = convertMenuItemFactory;
@@ -44,5 +44,5 @@ public sealed partial class MainForm : Form //todo все на async перед�
         mainPanel.VerticalScroll.Value = (int) (e.Y / (double) mainPanel.Height * mainPanel.VerticalScroll.Maximum);
     }
 
-    private void OnConverterClick(IConverter<RgbPixel> converter) => pictureBox.Image = formState.ConvertImage(converter);
+    private void OnConverterClick(IConverter converter) => pictureBox.Image = formState.ConvertImage(converter);
 }

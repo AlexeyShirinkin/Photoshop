@@ -1,8 +1,9 @@
-﻿using Photoshop.Core.Models;
+﻿using System.Drawing;
+using Image = Photoshop.Core.Models.Image;
 
 namespace Photoshop.Core.Iterators;
 
-public class NeighbourhoodIterator<TPixel> : IPixelIterator<IEnumerable<TPixel>, TPixel> where TPixel : IPixel
+public class NeighbourhoodIterator : IPixelIterator<IEnumerable<Color>>
 {
     private const int Coefficient = 2;
     private readonly int coefficient;
@@ -12,14 +13,14 @@ public class NeighbourhoodIterator<TPixel> : IPixelIterator<IEnumerable<TPixel>,
         this.coefficient = coefficient;
     }
 
-    public IEnumerable<PixelWrapper<IEnumerable<TPixel>>> IterateImagePixel(Image<TPixel> image)
+    public IEnumerable<PixelWrapper<IEnumerable<Color>>> IterateImagePixel(Image image)
     {
         for (var i = 0; i < image.Width; ++i)
             for (var j = 0; j < image.Height; ++j)
-                yield return new PixelWrapper<IEnumerable<TPixel>>(i, j, GetNeighborhood(i, j, image));
+                yield return new PixelWrapper<IEnumerable<Color>>(i, j, GetNeighborhood(i, j, image));
     }
 
-    private IEnumerable<TPixel> GetNeighborhood(int i, int j, Image<TPixel> image)
+    private IEnumerable<Color> GetNeighborhood(int i, int j, Image image)
     {
         for (var k = i - coefficient; k < i + coefficient + 1; ++k)
             for (var n = j - coefficient; n < j + coefficient + 1; ++n)
