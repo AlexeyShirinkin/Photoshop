@@ -3,9 +3,7 @@ using Ninject.Extensions.Conventions;
 using Ninject.Syntax;
 using Photoshop.Core.Converters;
 using Photoshop.Core.Converters.RgbConverters;
-using Photoshop.Core.Factory;
 using Photoshop.Core.Iterators;
-using Photoshop.Core.Models;
 using Photoshop.Core.PixelConverters;
 
 namespace Photoshop.Visualization.Configuration;
@@ -18,7 +16,6 @@ public static class AppConfiguration
         ConfigurePixelIterators(kernel);
         ConfigureRgbConverters(kernel);
 
-        kernel.Bind<IPixelFactory<Color>>().To<RgbPixelFactory>().InSingletonScope();
         kernel.Bind<FormState>().ToSelf().InSingletonScope();
         kernel.Bind<IConvertMenuItemFactory>().To<ConvertMenuItemFactory>().InSingletonScope();
     }

@@ -1,6 +1,4 @@
 ﻿using Photoshop.Core.Converters;
-using Photoshop.Core.Factory;
-using Photoshop.Core.Models;
 using Image = System.Drawing.Image;
 
 namespace Photoshop.Visualization;
@@ -9,17 +7,10 @@ public class FormState
 {
     public bool IsImageSet => history.Count != 0;
     private Photoshop.Core.Models.Image? ConvertedImage { get; set; }
-    private readonly IPixelFactory<Color> pixelFactory;
     private const double ScalingFactor = 1.05;
 
     private readonly Stack<(Image, Size)> history = new();
     private readonly Stack<(Image, Size)> changes = new();
-
-
-    public FormState(IPixelFactory<Color> pixelFactory)
-    {
-        this.pixelFactory = pixelFactory;
-    }
 
     public Image LoadImage()
     {
@@ -28,7 +19,7 @@ public class FormState
         if (newImage is null)
             throw new FileLoadException("Не получилось загрузить файл");
         history.Push((newImage, newImage.Size));
-        ConvertedImage = BitmapConverter.FromBitmap(new Bitmap(history.Peek().Item1), pixelFactory);
+        ConvertedImage = BitmapConverter.FromBitmap(new Bitmap(history.Peek().Item1));
         return history.Peek().Item1;
     }
 
@@ -38,8 +29,7 @@ public class FormState
             return null;
         var convertedImage = converter.Convert(ConvertedImage
                                                ?? BitmapConverter
-                                                   .FromBitmap(new Bitmap(history.Peek().Item1),
-                                                               pixelFactory));
+                                                   .FromBitmap(new Bitmap(history.Peek().Item1)));
         ConvertedImage = convertedImage;
         history.Push((BitmapConverter.ToBitmap(convertedImage), history.Peek().Item2));
         changes.Clear();
