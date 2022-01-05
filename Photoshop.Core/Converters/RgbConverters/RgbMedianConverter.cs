@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using Photoshop.Core.Iterators;
-using Photoshop.Core.Models;
 using Photoshop.Core.PixelConverters;
 
 namespace Photoshop.Core.Converters.RgbConverters;

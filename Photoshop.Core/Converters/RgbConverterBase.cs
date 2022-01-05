@@ -7,8 +7,7 @@ namespace Photoshop.Core.Converters;
 
 public abstract class RgbConverterBase<TIterate> : ConverterBase<Color, TIterate>
 {
-    protected RgbConverterBase(IPixelConverter<TIterate, Color> pixelConverter,
-                               IPixelIterator<TIterate> pixelIterator)
+    protected RgbConverterBase(IPixelConverter<TIterate, Color> pixelConverter, IPixelIterator<TIterate> pixelIterator)
         : base(pixelConverter, pixelIterator)
     {
     }

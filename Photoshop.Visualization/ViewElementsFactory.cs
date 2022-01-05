@@ -1,5 +1,4 @@
 ﻿using Photoshop.Core.Converters;
-using Photoshop.Core.Models;
 using Photoshop.Visualization.Utilities;
 
 namespace Photoshop.Visualization;

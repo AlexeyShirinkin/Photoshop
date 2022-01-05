@@ -1,5 +1,4 @@
-﻿using Photoshop.Core.Models;
-using Photoshop.Core.Utilities;
+﻿using Photoshop.Core.Utilities;
 
 namespace Photoshop.Core.PixelConverters;
 
