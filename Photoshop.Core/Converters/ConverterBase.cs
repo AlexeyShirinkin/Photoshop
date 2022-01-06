@@ -21,8 +21,8 @@ public abstract class ConverterBase<TResult, TInput> : IConverter
         if (image == null)
             throw new ArgumentNullException(nameof(image));
         var newPixels = new TResult[image.Width, image.Height];
-        foreach (var pixelWrapper in pixelIterator.IterateImagePixel(image))
-            newPixels[pixelWrapper.X, pixelWrapper.Y] = pixelConverter.ConvertPixel(pixelWrapper.Item);
+        Parallel.ForEach(pixelIterator.IterateImagePixel(image),
+            pw => newPixels[pw.X, pw.Y] = pixelConverter.ConvertPixel(pw.Item));
 
         return ToImage(newPixels);
     }
