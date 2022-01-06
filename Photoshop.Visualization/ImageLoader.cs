@@ -2,7 +2,7 @@
 
 public static class ImageLoader
 {
-    public static Image? Load()
+    public static Bitmap? Load()
     {
         var openDialog = new OpenFileDialog();
         openDialog.Filter =
@@ -20,7 +20,7 @@ public static class ImageLoader
         return image;
     }
 
-    private static bool TryGetImage(string fileName, out Image? image)
+    private static bool TryGetImage(string fileName, out Bitmap? image)
     {
         try
         {
