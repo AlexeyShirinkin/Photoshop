@@ -1,8 +1,6 @@
-﻿using Photoshop.Core.Models;
+﻿namespace Photoshop.Visualization;
 
-namespace Photoshop.Visualization;
-
-public interface IConvertMenuItemFactory<TPixel> where TPixel : IPixel
+public interface IConvertMenuItemFactory
 {
-    IEnumerable<ConvertMenuItem<TPixel>> Create();
+    IEnumerable<ConvertMenuItem> Create();
 }

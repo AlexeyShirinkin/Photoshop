@@ -1,8 +1,9 @@
-﻿using Photoshop.Core.Models;
+﻿using System.Drawing;
+using Image = Photoshop.Core.Models.Image;
 
 namespace Photoshop.Core.Iterators;
 
-public class WindowIterator<TPixel> : IPixelIterator<TPixel[,], TPixel> where TPixel : IPixel
+public class WindowIterator : IPixelIterator<Color[,]>
 {
     private readonly int height;
     private readonly int width;
@@ -13,17 +14,17 @@ public class WindowIterator<TPixel> : IPixelIterator<TPixel[,], TPixel> where TP
         width = size;
     }
 
-    public IEnumerable<PixelWrapper<TPixel[,]>> IterateImagePixel(Image<TPixel> image)
+    public IEnumerable<PixelWrapper<Color[,]>> IterateImagePixel(Image image)
     {
         for (var i = 0; i < image.Width; ++i)
             for (var j = 0; j < image.Height; ++j)
                 yield return
-                    new PixelWrapper<TPixel[,]>(i, j, GetNeighborhood(i, j, image));
+                    new PixelWrapper<Color[,]>(i, j, GetNeighborhood(i, j, image));
     }
 
-    private TPixel[,] GetNeighborhood(int i, int j, Image<TPixel> image)
+    private Color[,] GetNeighborhood(int i, int j, Image image)
     {
-        var neighborhood = new TPixel[width, height];
+        var neighborhood = new Color[width, height];
         var rowCount = 0;
         for (var k = i - width / 2; k < i + width / 2 + 1; ++k)
         {

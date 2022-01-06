@@ -2,7 +2,7 @@
 
 namespace Photoshop.Core.Converters;
 
-public interface IConverter<TPixel> where TPixel : IPixel
+public interface IConverter
 {
-    Image<TPixel> Convert(Image<TPixel>? image);
+    Image Convert(Image? image);
 }

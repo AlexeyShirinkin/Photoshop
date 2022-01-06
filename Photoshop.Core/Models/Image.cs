@@ -1,18 +1,20 @@
-﻿namespace Photoshop.Core.Models;
+﻿using System.Drawing;
 
-public class Image<TPixel> where TPixel : IPixel
+namespace Photoshop.Core.Models;
+
+public class Image
 {
     public int Width { get; }
     public int Height { get; }
 
-    private readonly TPixel[,] pixels; //TODO: зависимость от пикселей нехорошо, можно переделать на какую-нибудь абстракццию
+    private readonly Color[,] pixels;
 
-    public Image(TPixel[,] pixels)
+    public Image(Color[,] pixels)
     {
         this.pixels = pixels;
         Width = pixels.GetLength(0);
         Height = pixels.GetLength(1);
     }
 
-    public TPixel this[int i, int j] => pixels[i, j];
+    public Color this[int i, int j] => pixels[i, j];
 }

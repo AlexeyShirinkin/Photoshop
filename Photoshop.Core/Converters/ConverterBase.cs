@@ -4,20 +4,19 @@ using Photoshop.Core.PixelConverters;
 
 namespace Photoshop.Core.Converters;
 
-public abstract class ConverterBase<TResult, TInput, TPixel> : IConverter<TPixel>
-    where TPixel : IPixel
+public abstract class ConverterBase<TResult, TInput> : IConverter
 {
     private readonly IPixelConverter<TInput, TResult> pixelConverter;
-    private readonly IPixelIterator<TInput, TPixel> pixelIterator;
+    private readonly IPixelIterator<TInput> pixelIterator;
 
     protected ConverterBase(IPixelConverter<TInput, TResult> pixelConverter,
-        IPixelIterator<TInput, TPixel> pixelIterator)
+        IPixelIterator<TInput> pixelIterator)
     {
         this.pixelConverter = pixelConverter;
         this.pixelIterator = pixelIterator;
     }
 
-    public Image<TPixel> Convert(Image<TPixel>? image)
+    public Image Convert(Image? image)
     {
         if (image == null)
             throw new ArgumentNullException(nameof(image));
@@ -28,5 +27,5 @@ public abstract class ConverterBase<TResult, TInput, TPixel> : IConverter<TPixel
         return ToImage(newPixels);
     }
 
-    protected abstract Image<TPixel> ToImage(TResult[,] pixels);
+    protected abstract Image ToImage(TResult[,] pixels);
 }
