@@ -1,13 +1,13 @@
-﻿namespace Photoshop.Core.Models;
+﻿using System.Drawing;
+
+namespace Photoshop.Core.Models;
 
 public record struct PixelRecord
 {
     public int R;
     public int G;
     public int B;
-
-    public int X;
-    public int Y;
+    public Point Location;
 
     public PixelRecord Aggregate(PixelRecord other, int scale)
     {
