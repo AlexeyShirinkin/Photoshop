@@ -29,14 +29,12 @@ public static class AppConfiguration
                    .ToSelf()
                    .InSingletonScope();
         bindingRoot.Bind<WindowIterator>()
-                   .ToMethod(context => new WindowIterator(3))
-                   .WhenInjectedInto(typeof(RgbBlurConverter), typeof(RgbEmbossingConverter),
-                                     typeof(RgbSharpnessConverter))
+                   .ToMethod(_ => new WindowIterator(3))
                    .InSingletonScope();
         bindingRoot.Bind<WindowIterator>()
-                   .ToMethod(context => new WindowIterator(5))
+                   .ToMethod(_ => new WindowIterator(5))
                    .WhenInjectedInto<RgbGaussConverter>()
-                   .InSingletonScope(); //todo костылище
+                   .InSingletonScope();
     }
 
     private static void ConfigurePixelIterators(IBindingRoot bindingRoot)
