@@ -1,6 +1,6 @@
 ﻿namespace Photoshop.Core.Models;
 
-public record PixelRecord
+public record struct PixelRecord
 {
     public int R;
     public int G;

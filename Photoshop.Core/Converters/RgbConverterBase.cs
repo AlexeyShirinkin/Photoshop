@@ -12,5 +12,5 @@ public abstract class RgbConverterBase<TIterate> : ConverterBase<Color, TIterate
     {
     }
 
-    protected override Image ToImage(Color[,] pixels) => new(pixels);
+    protected override Image ToImage(Color[,] pixels) => Image.FromPixels(pixels);
 }

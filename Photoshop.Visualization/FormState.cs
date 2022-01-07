@@ -6,11 +6,10 @@ namespace Photoshop.Visualization;
 public class FormState
 {
     public bool IsImageSet => history.Count != 0;
-    private Photoshop.Core.Models.Image? ConvertedImage { get; set; }
     private const double ScalingFactor = 1.05;
 
-    private readonly Stack<(Image, Size)> history = new();
-    private readonly Stack<(Image, Size)> changes = new();
+    private readonly Stack<(Bitmap, Size)> history = new();
+    private readonly Stack<(Bitmap, Size)> changes = new();
 
     public Image LoadImage()
     {
@@ -19,7 +18,6 @@ public class FormState
         if (newImage is null)
             throw new FileLoadException("Не получилось загрузить файл");
         history.Push((newImage, newImage.Size));
-        ConvertedImage = BitmapConverter.FromBitmap(new Bitmap(history.Peek().Item1));
         return history.Peek().Item1;
     }
 
@@ -27,14 +25,11 @@ public class FormState
     {
         if (!IsImageSet)
             return null;
-        var convertedImage = converter.Convert(ConvertedImage
-                                               ?? BitmapConverter
-                                                   .FromBitmap(new Bitmap(history.Peek().Item1)));
-        ConvertedImage = convertedImage;
-        history.Push((BitmapConverter.ToBitmap(convertedImage), history.Peek().Item2));
+        var convertedImage = converter.Convert(Core.Models.Image.FromBitmap(history.Peek().Item1));
+        var (image, size) = (convertedImage.ToBitmap(), history.Peek().Item2);
+        history.Push((image, size));
         changes.Clear();
-        var (image, size) = history.Peek();
-        return new Bitmap(image, size);
+        return image;
     }
 
     public Image Undo()
@@ -42,34 +37,27 @@ public class FormState
         if (!IsImageSet)
             return null;
         changes.Push(history.Pop());
-        ConvertedImage = null;
 
-        if (!IsImageSet) 
-            return null;
-        var (image, size) = history.Peek();
-        return new Bitmap(image, size);
+        return !IsImageSet ? null : history.Peek().Item1;
     }
 
     public Image Redo()
     {
         if (changes.Count != 0)
             history.Push(changes.Pop());
-        ConvertedImage = null;
 
-        if (!IsImageSet) 
-            return null;
-        var (image, size) = history.Peek();
-        return new Bitmap(image, size);
+        return !IsImageSet ? null : history.Peek().Item1;
     }
 
 
     public Bitmap ScaleImage(int delta)
     {
         var (image, size) = history.Pop();
-        history.Push((image, delta > 0
-            ? new Size((int)(size.Width * ScalingFactor), (int)(size.Height * ScalingFactor))
-            : new Size((int)(size.Width / ScalingFactor), (int)(size.Height / ScalingFactor))));
+        var newSize = delta > 0
+            ? new Size((int) (size.Width * ScalingFactor), (int) (size.Height * ScalingFactor))
+            : new Size((int) (size.Width / ScalingFactor), (int) (size.Height / ScalingFactor));
+        history.Push((image, newSize));
 
-        return new Bitmap(history.Peek().Item1, history.Peek().Item2);
+        return new Bitmap(image, newSize);
     }
 }
