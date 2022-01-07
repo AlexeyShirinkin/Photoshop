@@ -51,6 +51,14 @@ public class FormState
         return !IsImageSet ? null : history.Peek().Item1;
     }
 
+    public Image Rotate(RotateFlipType flipType)
+    {
+        if (!IsImageSet)
+            return null;
+        
+        history.Peek().Item1.RotateFlip(flipType);
+        return history.Peek().Item1;
+    }
 
     public Bitmap ScaleImage(int delta)
     {

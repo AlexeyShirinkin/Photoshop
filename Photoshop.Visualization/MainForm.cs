@@ -6,20 +6,21 @@ public sealed partial class MainForm : Form //todo все на async перед�
 {
     private readonly FormState formState;
     private readonly PictureBox pictureBox;
-    private readonly IConvertMenuItemFactory convertMenuItemFactory;
     private readonly Panel mainPanel;
 
-    public MainForm(FormState formState, IConvertMenuItemFactory convertMenuItemFactory) //todo плохая завязка на RgbPixel
+    public MainForm(FormState formState, IConvertMenuItemFactory convertMenuItemFactory)
     {
         this.formState = formState;
-        this.convertMenuItemFactory = convertMenuItemFactory;
         WindowState = FormWindowState.Maximized;
         mainPanel = ViewElementsFactory.CreateLayoutPanel(PictureBoxOnMouseWheel);
         pictureBox = ViewElementsFactory.CreatePictureBox();
         Controls.Add(mainPanel);
+
         Controls.Add(ViewElementsFactory.CreateToolStripMenu(OnLoadClick,
                                                              convertMenuItemFactory.Create(),
+                                                             RotateMenuItemFactory.Create(),
                                                              OnConverterClick,
+                                                             OnRotateClick,
                                                              OnUndoClick,
                                                              OnRedoClick));
         mainPanel.Controls.Add(pictureBox);
@@ -30,6 +31,10 @@ public sealed partial class MainForm : Form //todo все на async перед�
     private void OnUndoClick(object? sender, EventArgs eventArgs) => pictureBox.Image = formState.Undo();
 
     private void OnRedoClick(object? sender, EventArgs eventArgs) => pictureBox.Image = formState.Redo();
+
+    private void OnRotateClick(RotateFlipType flipType) => pictureBox.Image = formState.Rotate(flipType);
+
+    private void OnConverterClick(IConverter converter) => pictureBox.Image = formState.ConvertImage(converter);
 
     private void PictureBoxOnMouseWheel(object? sender, MouseEventArgs e)
     {
@@ -42,6 +47,4 @@ public sealed partial class MainForm : Form //todo все на async перед�
         mainPanel.HorizontalScroll.Value = (int) (e.X / (double) mainPanel.Width * mainPanel.HorizontalScroll.Maximum);
         mainPanel.VerticalScroll.Value = (int) (e.Y / (double) mainPanel.Height * mainPanel.VerticalScroll.Maximum);
     }
-
-    private void OnConverterClick(IConverter converter) => pictureBox.Image = formState.ConvertImage(converter);
 }

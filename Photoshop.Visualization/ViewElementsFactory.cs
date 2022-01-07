@@ -24,7 +24,9 @@ public static class ViewElementsFactory
     public static MenuStrip CreateToolStripMenu(
         EventHandler onLoad,
         IEnumerable<ConvertMenuItem> convertMenuItems,
+        IEnumerable<RotateMenuItem> rotateMenuItems,
         Action<IConverter> onClick,
+        Action<RotateFlipType> onRotate,
         EventHandler onUndo,
         EventHandler onRedo)
     {
@@ -37,6 +39,7 @@ public static class ViewElementsFactory
         return menu
             .With(CreateFileItem("File").With(CreateToolStripMenuItem("Load", onLoad)))
             .With(GetTransformMenu(convertMenuItems, onClick))
+            .With(GetRotateMenu(rotateMenuItems, onRotate))
             .With(CreateToolStripMenuItem("Undo", onUndo))
             .With(CreateToolStripMenuItem("Redo", onRedo));
     }
@@ -50,8 +53,16 @@ public static class ViewElementsFactory
             (current, convertMenuItem) => current.With(
                 CreateToolStripMenuItem(convertMenuItem.MenuName, onClick, convertMenuItem.Converter)));
     }
+    
+    private static ToolStripMenuItem GetRotateMenu(IEnumerable<RotateMenuItem> convertMenuItems, Action<RotateFlipType> onRotate)
+    {
+        var menuItem = CreateFileItem("Rotate");
+        return convertMenuItems.Aggregate(menuItem,
+            (current, convertMenuItem) => current.With(
+                CreateToolStripMenuItem(convertMenuItem.Name, () => onRotate(convertMenuItem.Action))));
+    }
 
-    private static ToolStripMenuItem CreateFileItem(string text) => new ToolStripMenuItem(text);
+    private static ToolStripMenuItem CreateFileItem(string text) => new(text);
 
     private static ToolStripMenuItem CreateToolStripMenuItem(
         string text,
@@ -60,6 +71,13 @@ public static class ViewElementsFactory
     {
         var toolStripMenuItem = new ToolStripMenuItem(text);
         toolStripMenuItem.Click += (_, _) => onClick(converter);
+        return toolStripMenuItem;
+    }
+    
+    private static ToolStripMenuItem CreateToolStripMenuItem(string text, Action onRotate)
+    {
+        var toolStripMenuItem = new ToolStripMenuItem(text);
+        toolStripMenuItem.Click += (_, _) => onRotate();
         return toolStripMenuItem;
     }
 
