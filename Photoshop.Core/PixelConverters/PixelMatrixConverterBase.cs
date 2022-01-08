@@ -17,13 +17,12 @@ public class PixelMatrixConverterBase : MatrixConverterBase<PixelRecord, Color>
             R = pixel.R,
             G = pixel.G,
             B = pixel.B,
-            X = i,
-            Y = j
+            Location = new Point(i, j)
         };
     }
 
     protected override PixelRecord Aggregate(PixelRecord previous, PixelRecord current)
-        => previous.Aggregate(current, Matrix[current.X, current.Y]);
+        => previous.Aggregate(current, Matrix[current.Location.X, current.Location.Y]);
 
     protected override PixelRecord Default => new();
 

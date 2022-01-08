@@ -23,10 +23,13 @@ public class Image
 
     public static Image FromBitmap(Bitmap bitmap)
     {
+        var depth = System.Drawing.Image.GetPixelFormatSize(bitmap.PixelFormat);
+        if (depth != 8 && depth != 24 && depth != 32)
+            throw new ArgumentException("Only 8, 24 and 32 bpp images are supported.");
+        
         var width = bitmap.Width;
         var height = bitmap.Height;
-        var bitmapData = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly,
-            PixelFormat.Format32bppArgb);
+        var bitmapData = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
         var stride = bitmapData.Stride;
         var pixels = new Color[width, height];
 
@@ -40,11 +43,14 @@ public class Image
                 for (var x = 0; x < width; ++x)
                 {
                     var blue = *tempPointer++;
-                    var green = *tempPointer++;
-                    var red = *tempPointer++;
-
-                    pixels[x, y] = Color.FromArgb(red, green, blue);
-                    ++tempPointer;
+                    var green = depth > 8 ? *tempPointer++ : blue;
+                    var red = depth > 8 ? *tempPointer++ : blue;
+                    if (depth > 24)
+                    {
+                        var alpha = *tempPointer++;
+                        pixels[x, y] = Color.FromArgb(alpha, red, green, blue);
+                    }
+                    else pixels[x, y] = Color.FromArgb(red, green, blue);
                 }
 
                 pointer += stride;
@@ -56,11 +62,14 @@ public class Image
         return new(pixels);
     }
 
-    public Bitmap ToBitmap()
+    public Bitmap ToBitmap(PixelFormat pixelFormat)
     {
+        var depth = System.Drawing.Image.GetPixelFormatSize(pixelFormat);
+        if (depth != 8 && depth != 24 && depth != 32)
+            throw new ArgumentException("Only 8, 24 and 32 bpp images are supported.");
+
         var bitmap = new Bitmap(Width, Height);
-        var bitmapData = bitmap.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly,
-            PixelFormat.Format24bppRgb);
+        var bitmapData = bitmap.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.WriteOnly, pixelFormat);
 
         unsafe
         {
@@ -73,8 +82,15 @@ public class Image
                 {
                     var rgb = pixels[x, y];
                     *tempPointer++ = rgb.B;
-                    *tempPointer++ = rgb.G;
-                    *tempPointer++ = rgb.R;
+                    if (depth > 8)
+                    {
+                        *tempPointer++ = rgb.G;
+                        *tempPointer++ = rgb.R;
+                    }
+                    if (depth > 24)
+                    {
+                        *tempPointer++ = rgb.A;
+                    }
                 }
 
                 pointer += stride;

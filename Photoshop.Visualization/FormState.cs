@@ -25,8 +25,10 @@ public class FormState
     {
         if (!IsImageSet)
             return null;
-        var convertedImage = converter.Convert(Core.Models.Image.FromBitmap(history.Peek().Item1));
-        var (image, size) = (convertedImage.ToBitmap(), history.Peek().Item2);
+        var (bitmap, size) = history.Peek();
+        var convertedImage = converter.Convert(Core.Models.Image.FromBitmap(bitmap));
+        var image = convertedImage.ToBitmap(bitmap.PixelFormat);
+        
         history.Push((image, size));
         changes.Clear();
         return image;
@@ -49,6 +51,14 @@ public class FormState
         return !IsImageSet ? null : history.Peek().Item1;
     }
 
+    public Image Rotate(RotateFlipType flipType)
+    {
+        if (!IsImageSet)
+            return null;
+        
+        history.Peek().Item1.RotateFlip(flipType);
+        return history.Peek().Item1;
+    }
 
     public Bitmap ScaleImage(int delta)
     {
