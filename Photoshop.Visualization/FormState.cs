@@ -56,8 +56,12 @@ public class FormState
         if (!IsImageSet)
             return null;
         
-        history.Peek().Item1.RotateFlip(flipType);
-        return history.Peek().Item1;
+        var bitmap = new Bitmap(history.Peek().Item1);
+        bitmap.RotateFlip(flipType);
+        
+        history.Push((bitmap, bitmap.Size));
+        changes.Clear();
+        return bitmap;
     }
 
     public Bitmap ScaleImage(int delta)
