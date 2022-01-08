@@ -17,6 +17,7 @@ public sealed partial class MainForm : Form //todo все на async перед�
         Controls.Add(mainPanel);
 
         Controls.Add(ViewElementsFactory.CreateToolStripMenu(OnLoadClick,
+                                                             OnSaveClick,
                                                              convertMenuItemFactory.Create(),
                                                              RotateMenuItemFactory.Create(),
                                                              OnConverterClick,
@@ -27,6 +28,8 @@ public sealed partial class MainForm : Form //todo все на async перед�
     }
 
     private void OnLoadClick(object? sender, EventArgs eventArgs) => pictureBox.Image = formState.LoadImage();
+
+    private void OnSaveClick(object? sender, EventArgs eventArgs) => formState.SaveImage();
 
     private void OnUndoClick(object? sender, EventArgs eventArgs) => pictureBox.Image = formState.Undo();
 

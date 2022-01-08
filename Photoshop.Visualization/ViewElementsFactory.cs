@@ -23,6 +23,7 @@ public static class ViewElementsFactory
 
     public static MenuStrip CreateToolStripMenu(
         EventHandler onLoad,
+        EventHandler onSave,
         IEnumerable<ConvertMenuItem> convertMenuItems,
         IEnumerable<RotateMenuItem> rotateMenuItems,
         Action<IConverter> onClick,
@@ -37,7 +38,9 @@ public static class ViewElementsFactory
         menu.BackColor = Color.WhiteSmoke;
 
         return menu
-            .With(CreateFileItem("File").With(CreateToolStripMenuItem("Load", onLoad)))
+            .With(CreateFileItem("File")
+                .With(CreateToolStripMenuItem("Load", onLoad))
+                .With(CreateToolStripMenuItem("Save", onSave)))
             .With(GetTransformMenu(convertMenuItems, onClick))
             .With(GetRotateMenu(rotateMenuItems, onRotate))
             .With(CreateToolStripMenuItem("Undo", onUndo))

@@ -20,6 +20,14 @@ public class FormState
         history.Push((newImage, newImage.Size));
         return history.Peek().Item1;
     }
+    
+    public void SaveImage()
+    {
+        if (!IsImageSet)
+            return;
+
+        ImageSaver.Save(history.Peek().Item1);
+    }
 
     public Image ConvertImage(IConverter converter)
     {

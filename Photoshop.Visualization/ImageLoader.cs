@@ -4,9 +4,10 @@ public static class ImageLoader
 {
     public static Bitmap? Load()
     {
-        var openDialog = new OpenFileDialog();
-        openDialog.Filter =
-            "Image Files(*.BMP;*.JPG;*.GIF;*.PNG)|*.BMP;*.JPG;*.GIF;*.PNG|All files (*.*)|*.*";
+        var openDialog = new OpenFileDialog
+        {
+            Filter = "Image Files(*.BMP;*.JPG;*.GIF;*.PNG)|*.BMP;*.JPG;*.GIF;*.PNG|All files (*.*)|*.*"
+        };
 
         if (openDialog.ShowDialog() != DialogResult.OK)
         {
