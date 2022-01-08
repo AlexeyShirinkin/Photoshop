@@ -11,7 +11,9 @@ public sealed partial class MainForm : Form //todo все на async перед�
     public MainForm(FormState formState, IConvertMenuItemFactory convertMenuItemFactory)
     {
         this.formState = formState;
-        WindowState = FormWindowState.Maximized;
+        Size = new Size(920, 1000);
+        AutoSizeMode = AutoSizeMode.GrowAndShrink;
+        
         mainPanel = ViewElementsFactory.CreateLayoutPanel(PictureBoxOnMouseWheel);
         pictureBox = ViewElementsFactory.CreatePictureBox();
         Controls.Add(mainPanel);
