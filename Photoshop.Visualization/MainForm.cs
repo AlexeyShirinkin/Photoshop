@@ -43,7 +43,9 @@ public sealed partial class MainForm : Form //todo все на async перед�
 
         pictureBox.Image = formState.ScaleImage(e.Delta);
 
-        if (e.Delta <= 0) return;
+        if (e.Delta <= 0)
+            return;
+
         mainPanel.HorizontalScroll.Value = (int) (e.X / (double) mainPanel.Width * mainPanel.HorizontalScroll.Maximum);
         mainPanel.VerticalScroll.Value = (int) (e.Y / (double) mainPanel.Height * mainPanel.VerticalScroll.Maximum);
     }

@@ -31,7 +31,7 @@ public class FormState
         
         history.Push((image, size));
         changes.Clear();
-        return image;
+        return new Bitmap(image, size);
     }
 
     public Image Undo()
@@ -40,7 +40,10 @@ public class FormState
             return null;
         changes.Push(history.Pop());
 
-        return !IsImageSet ? null : history.Peek().Item1;
+        if (!IsImageSet)
+            return null;
+        var (bitmap, size) = history.Peek();
+        return new Bitmap(bitmap, size);
     }
 
     public Image Redo()
@@ -48,7 +51,10 @@ public class FormState
         if (changes.Count != 0)
             history.Push(changes.Pop());
 
-        return !IsImageSet ? null : history.Peek().Item1;
+        if (!IsImageSet)
+            return null;
+        var (bitmap, size) = history.Peek();
+        return new Bitmap(bitmap, size);
     }
 
     public Image Rotate(RotateFlipType flipType)
@@ -56,12 +62,14 @@ public class FormState
         if (!IsImageSet)
             return null;
         
-        var bitmap = new Bitmap(history.Peek().Item1);
-        bitmap.RotateFlip(flipType);
-        
-        history.Push((bitmap, bitmap.Size));
+        var (bitmap, size) = history.Peek();
+
+        var newBitmap = new Bitmap(bitmap, size);
+        newBitmap.RotateFlip(flipType);
+
+        history.Push((newBitmap, newBitmap.Size));
         changes.Clear();
-        return bitmap;
+        return newBitmap;
     }
 
     public Bitmap ScaleImage(int delta)
@@ -70,8 +78,11 @@ public class FormState
         var newSize = delta > 0
             ? new Size((int) (size.Width * ScalingFactor), (int) (size.Height * ScalingFactor))
             : new Size((int) (size.Width / ScalingFactor), (int) (size.Height / ScalingFactor));
-        history.Push((image, newSize));
 
+        if (!(newSize.Width is >= 144 and <= 2560 && newSize.Height is >= 144 and <= 2560))
+            newSize = size;
+
+        history.Push((image, newSize));
         return new Bitmap(image, newSize);
     }
 }
