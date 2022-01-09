@@ -22,8 +22,8 @@ public static class ViewElementsFactory
     }
 
     public static MenuStrip CreateToolStripMenu(
-        EventHandler onLoad,
-        EventHandler onSave,
+        Func<object?, EventArgs, Task> onLoad,
+        Func<object?, EventArgs, Task> onSave,
         IEnumerable<ConvertMenuItem> convertMenuItems,
         IEnumerable<RotateMenuItem> rotateMenuItems,
         Action<IConverter> onClick,
@@ -88,6 +88,13 @@ public static class ViewElementsFactory
     {
         var toolStripMenuItem = new ToolStripMenuItem(text);
         toolStripMenuItem.Click += onCLick;
+        return toolStripMenuItem;
+    }
+    
+    private static ToolStripMenuItem CreateToolStripMenuItem(string text, Func<object?, EventArgs, Task> onClick)
+    {
+        var toolStripMenuItem = new ToolStripMenuItem(text);
+        toolStripMenuItem.Click += (sender, args) => onClick(sender, args);
         return toolStripMenuItem;
     }
 }

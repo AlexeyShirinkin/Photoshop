@@ -2,7 +2,7 @@
 
 public static class ImageLoader
 {
-    public static Bitmap? Load()
+    public static async Task<Bitmap?> Load()
     {
         var openDialog = new OpenFileDialog
         {
@@ -15,23 +15,22 @@ public static class ImageLoader
             return null;
         }
 
-        if (!TryGetImage(openDialog.FileName, out var image))
+        var image = await Task.Run(() => GetImage(openDialog.FileName));
+        if (image is null)
             MessageBox.Show("Unable to open file", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
         return image;
     }
 
-    private static bool TryGetImage(string fileName, out Bitmap? image)
+    private static Bitmap? GetImage(string fileName)
     {
         try
         {
-            image = new Bitmap(fileName);
-            return true;
+            return new Bitmap(fileName);
         }
         catch
         {
-            image = null;
-            return false;
+            return null;
         }
     }
 }

@@ -11,9 +11,9 @@ public class FormState
     private readonly Stack<(Bitmap, Size)> history = new();
     private readonly Stack<(Bitmap, Size)> changes = new();
 
-    public Image LoadImage()
+    public async Task<Bitmap> LoadImage()
     {
-        var newImage = ImageLoader.Load();
+        var newImage = await ImageLoader.Load();
         changes.Clear();
         if (newImage is null)
             throw new FileLoadException("Не получилось загрузить файл");
@@ -21,12 +21,12 @@ public class FormState
         return history.Peek().Item1;
     }
     
-    public void SaveImage()
+    public async Task SaveImage()
     {
         if (!IsImageSet)
             return;
 
-        ImageSaver.Save(history.Peek().Item1);
+        await ImageSaver.Save(history.Peek().Item1);
     }
 
     public Image ConvertImage(IConverter converter)

@@ -29,17 +29,17 @@ public sealed partial class MainForm : Form //todo все на async перед�
         mainPanel.Controls.Add(pictureBox);
     }
 
-    private void OnLoadClick(object? sender, EventArgs eventArgs) => pictureBox.Image = formState.LoadImage();
+    private async Task OnLoadClick(object? sender, EventArgs eventArgs) => pictureBox.Image = await formState.LoadImage();
 
-    private void OnSaveClick(object? sender, EventArgs eventArgs) => formState.SaveImage();
+    private async Task OnSaveClick(object? sender, EventArgs eventArgs) => await formState.SaveImage();
 
-    private void OnUndoClick(object? sender, EventArgs eventArgs) => pictureBox.Image = formState.Undo();
+    private async void OnUndoClick(object? sender, EventArgs eventArgs) => pictureBox.Image = await Task.Run(() => formState.Undo());
 
-    private void OnRedoClick(object? sender, EventArgs eventArgs) => pictureBox.Image = formState.Redo();
+    private async void OnRedoClick(object? sender, EventArgs eventArgs) => pictureBox.Image = await Task.Run(() => formState.Redo());
 
-    private void OnRotateClick(RotateFlipType flipType) => pictureBox.Image = formState.Rotate(flipType);
+    private async void OnRotateClick(RotateFlipType flipType) => pictureBox.Image = await Task.Run(() => formState.Rotate(flipType));
 
-    private void OnConverterClick(IConverter converter) => pictureBox.Image = formState.ConvertImage(converter);
+    private async void OnConverterClick(IConverter converter) => pictureBox.Image = await Task.Run(() => formState.ConvertImage(converter));
 
     private void PictureBoxOnMouseWheel(object? sender, MouseEventArgs e)
     {
